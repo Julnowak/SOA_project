@@ -1,6 +1,21 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 const Products = () => {
+
+    useEffect(
+        () => {
+          ( async () => {
+              const response = await fetch('http://localhost:8000/api/products/', {
+                });
+
+              const data = await response.json();
+
+              console.log(data)
+          }
+          )();
+
+        }, []);
+
     return (
         <div>
             <h2>Products</h2>
@@ -23,13 +38,6 @@ const Products = () => {
                   <td>ipsum</td>
                   <td>dolor</td>
                   <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,002</td>
-                  <td>amet</td>
-                  <td>consectetur</td>
-                  <td>adipiscing</td>
-                  <td>elit</td>
                 </tr>
                 </tbody>
 
