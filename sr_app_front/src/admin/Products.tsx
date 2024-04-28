@@ -1,6 +1,9 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
+import {Product} from "../interfaces/product";
+import {Link} from "react-router-dom";
 
 const Products = () => {
+    const [products, setProducts] = useState([])
 
     useEffect(
         () => {
@@ -10,11 +13,22 @@ const Products = () => {
 
               const data = await response.json();
 
-              console.log(data)
+              setProducts(data);
           }
           )();
 
         }, []);
+    
+    const del = async (id: number) => {
+        if (window.confirm("Do you want to delete item?")){
+
+            await fetch(`http://localhost:8000/api/products/${id}`, {
+                method: 'DELETE'
+            });
+
+            setProducts(products.filter((p: Product) => p.id !== id));
+        }
+    };
 
     return (
         <div>
@@ -24,21 +38,32 @@ const Products = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Header</th>
-                    <th>Header</th>
-                    <th>Header</th>
-                    <th>Header</th>
+                    <th>Name</th>
+                    <th>Likes</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
+                {products.map((p:Product) => {
+                    return (
+                        <tr key={p.id}>
+                          <td>{p.id}</td>
+                          <td>{p.name}</td>
+                          <td>{p.likes}</td>
+                          <td>
+                              <div className="btn-group mr-2">
+                                  <a href='#' className='btn btn-sm btn-outline-secondary'
+                                  onClick={() => del(p.id)}>
+                                      Delete
+                                  </a>
+                                  <Link to={`/admin/products/${p.id}/edit`} className='btn btn-sm btn-outline-secondary'>Edit</Link>
+                              </div>
+                          </td>
+                        </tr>
+                    )
+                })}
+
                 </tbody>
 
               </table>

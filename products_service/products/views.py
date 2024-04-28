@@ -44,6 +44,7 @@ class ProductViewSet(viewsets.ViewSet):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class USerAPIView(APIView):
     def get(self, _):
         users = User.objects.all()

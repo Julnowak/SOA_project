@@ -4,21 +4,31 @@ import Nav from "./components/Nav";
 import Products from "./admin/Products";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Main from "./components/Main";
-
+import ProductsCreate from "./admin/ProductsCreate";
+import { Link } from "react-router-dom";
+import ProductsEdit from "./admin/ProductsEdit";
 
 function App() {
   return (
     <div className="App">
         <Nav />
 
+
+
         <div className="container-fluid">
             <div className="row">
                 <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
                     <BrowserRouter>
+
+                        <div className="btn-toolbar mb-2 mb-md-0">
+                            <Link to={'/admin/products/create'} className='btn btn-sm btn-outline-secondary'>Add</Link>
+                        </div>
                         <Routes>
                             <Route path='/' element={<Main/>}/>
                             <Route path='/admin/products' element={<Products/>}/>
+                            <Route path='/admin/products/create' element={<ProductsCreate/>}/>
+                            <Route path='/admin/products/:id/edit' element={<ProductsEdit/>}/>
                         </Routes>
                     </BrowserRouter>
 
