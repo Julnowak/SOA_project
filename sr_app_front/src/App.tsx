@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Products from "./admin/Products";
-import {BrowserRouter, Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 import Main from "./components/Main";
 import ProductsCreate from "./admin/ProductsCreate";
 import ProductsEdit from "./admin/ProductsEdit";
@@ -16,6 +16,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Nav from "react-bootstrap/Nav";
 import ProductSite from "./admin/ProductSite";
+import ClientPanel from "./admin/clientPanel";
+import Negotiations from "./admin/Negotiations";
+import History from "./admin/History";
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -110,7 +113,12 @@ function Root() {
         localStorage.setItem('user_id', user_id);
 
         setCurrentUser(true);
-        navigate('/admin/products/')
+        if (user_type === 'producent'){
+            navigate('/admin/products/')
+        }
+        else{
+            navigate('/admin/clientPanel/')
+        }
 
       } catch (error) {
         console.error('Login failed:', error);// Login failed
@@ -162,8 +170,8 @@ function Root() {
               <Navbar.Collapse className="justify-content-end">
                   <Nav className="me-auto">
                     <Nav.Link href="http://127.0.0.1:3000/products_view">Market</Nav.Link>
-                    <Nav.Link href="#link">Negocjacje</Nav.Link>
-                    <Nav.Link href="#link">Historia</Nav.Link>
+                    <Nav.Link href="http://127.0.0.1:3000/negotiations">Negocjacje</Nav.Link>
+                    <Nav.Link href="http://127.0.0.1:3000/history">Historia</Nav.Link>
                   </Nav>
 
                   <Navbar.Text>
@@ -179,7 +187,10 @@ function Root() {
              <Routes>
                <Route path='/' element={<Homepage/>}/>
                <Route path='/products_view' element={<Main/>}/>
+               <Route path='/negotiations' element={<Negotiations/>}/>
+               <Route path='/history' element={<History/>}/>
                <Route path='/admin/products' element={<Products/>}/>
+               <Route path='/admin/clientPanel' element={<ClientPanel/>}/>
                <Route path='/admin/products/create' element={<ProductsCreate/>}/>
                <Route path='/admin/products/:id/edit' element={<ProductsEdit/>}/>
                <Route path='/products_view/:id' element={<ProductSite/>}/>
