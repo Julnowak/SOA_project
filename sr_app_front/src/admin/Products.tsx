@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Product} from "../interfaces/product";
 import {Link} from "react-router-dom";
+import Main from "../components/Main";
 
 const Products = () => {
-    const [products, setProducts] = useState([])
+    const [products, setProducts] = useState([] as Product[])
+    const [available, setAvailable] = useState(false)
 
     useEffect(
         () => {
@@ -14,6 +16,7 @@ const Products = () => {
               const data = await response.json();
 
               setProducts(data);
+              setAvailable(true);
           }
           )();
 
@@ -30,8 +33,18 @@ const Products = () => {
         }
     };
 
+
+    if (available){
+
+    }
     return (
         <div>
+
+            <h1>Witaj, {localStorage.getItem('username')}!</h1>
+
+            <div className="btn-toolbar mb-2 mb-md-0">
+                <Link to={'/admin/products/create'} className='btn btn-sm btn-outline-secondary'>Add</Link>
+            </div>
             <h2>Products</h2>
             <div className="table-responsive">
               <table className="table table-striped table-sm">

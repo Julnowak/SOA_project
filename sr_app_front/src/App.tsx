@@ -1,42 +1,275 @@
 import React from 'react';
 import './App.css';
-import Nav from "./components/Nav";
 import Products from "./admin/Products";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import Main from "./components/Main";
 import ProductsCreate from "./admin/ProductsCreate";
-import { Link } from "react-router-dom";
 import ProductsEdit from "./admin/ProductsEdit";
+import Homepage from "./components/Homepage";
+import axios from 'axios'
+import {useState, useEffect} from 'react'
+
+
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Nav from "react-bootstrap/Nav";
+import ProductSite from "./admin/ProductSite";
+
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true;
+
+const client = axios.create({
+    baseURL: "http://localhost:3000"
+})
+
+
+function Root() {
+
+
+    const [currentUser, setCurrentUser] = useState<boolean>();
+    const [registrationToggle, setRegistrationToggle] = useState(false);
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate()
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    client.get("http://127.0.0.1:8001/api/user/")
+    .then(function(res) {
+      setCurrentUser(true);
+    })
+    .catch(function(error) {
+      setCurrentUser(false);
+    });
+
+    return () => clearTimeout(timer);
+  }, []);
+
+    function update_form_btn() {
+    if (registrationToggle) {
+      // @ts-ignore
+        document.getElementById("form_btn").innerHTML = "Zarejestruj się";
+        setRegistrationToggle(false);
+    } else {
+      // @ts-ignore
+        document.getElementById("form_btn").innerHTML = "Zaloguj się";
+        setRegistrationToggle(true);
+    }
+  }
+
+  function submitRegistration({e}: { e: any }) {
+    e.preventDefault();
+    client.post(
+      "http://127.0.0.1:8001/api/register",
+      {
+        email: email,
+        username: username,
+        password: password
+      }
+    ).then(function(res) {
+      client.post(
+        "http://127.0.0.1:8001/api/login",
+        {
+          email: email,
+          password: password
+        }
+      ).then(function(res) {
+        setCurrentUser(true);
+      });
+    });
+  }
+
+  async function submitLogin({e}: { e: any }) {
+    e.preventDefault();
+    console.log(email)
+      try {
+          const response = await client.post(
+          "http://127.0.0.1:8001/api/login/",
+          {
+            email: email,
+            password: password
+          })
+
+        const em = response.data.email;
+        const name = response.data.username;
+        const user_type = response.data.user_type;
+        const user_id = response.data.id;
+        console.log(user_type)
+
+        localStorage.setItem('email', em);
+        localStorage.setItem('username', name);
+        localStorage.setItem('user_type', user_type);
+        localStorage.setItem('user_id', user_id);
+
+        setCurrentUser(true);
+        navigate('/admin/products/')
+
+      } catch (error) {
+        console.error('Login failed:', error);// Login failed
+    }
+  }
+
+
+  function submitLogout({e}: { e: any }) {
+    e.preventDefault();
+    client.post(
+      "http://127.0.0.1:8001/api/logout/",
+      {withCredentials: true}
+    ).then(function(res) {
+      setCurrentUser(false);
+      localStorage.clear();
+    });
+  }
+
+  function LoadingSpinner() {
+  document.body.style.backgroundColor ="#323232";
+  return <div className="fade-in"><div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+            <div className="spinner-border text-primary" style={{ width: '5rem', height: '5rem' }} role="status">
+                      <span className="visually-hidden"></span>
+                    </div>
+         </div></div>;
+}
+
+    // Użytkownik zalogowany
+    document.body.style.backgroundColor = "#ffffff";
+    if (currentUser) {
+    return (
+      <div>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <div className="fade-in">
+<Navbar bg="dark" variant="dark">
+          <Container>
+              <Navbar.Brand href="http://127.0.0.1:3000/">HOME</Navbar.Brand>
+              <Navbar.Brand href="http://127.0.0.1:3000/admin/products">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-person"
+                       viewBox="0 0 16 16">
+                    <path
+                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                  </svg>
+              </Navbar.Brand>
+              <Navbar.Toggle />
+
+              <Navbar.Collapse className="justify-content-end">
+                  <Nav className="me-auto">
+                    <Nav.Link href="http://127.0.0.1:3000/products_view">Market</Nav.Link>
+                    <Nav.Link href="#link">Negocjacje</Nav.Link>
+                    <Nav.Link href="#link">Historia</Nav.Link>
+                  </Nav>
+
+                  <Navbar.Text>
+                    <form onSubmit={e => submitLogout({e: e})}>
+                      <Button type="submit" variant="light">Wyloguj się</Button>
+                    </form>
+                  </Navbar.Text>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+
+
+             <Routes>
+               <Route path='/' element={<Homepage/>}/>
+               <Route path='/products_view' element={<Main/>}/>
+               <Route path='/admin/products' element={<Products/>}/>
+               <Route path='/admin/products/create' element={<ProductsCreate/>}/>
+               <Route path='/admin/products/:id/edit' element={<ProductsEdit/>}/>
+               <Route path='/products_view/:id' element={<ProductSite/>}/>
+           </Routes>
+            </div>
+          )}
+
+
+      </div>
+    );
+  } else{
+  return (
+    <div>
+    {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <div>
+<Navbar bg="dark" variant="dark">
+      <Container>
+        <Navbar.Brand>HOME</Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text>
+            <Button id="form_btn" onClick={update_form_btn} variant="light">Zarejestruj się</Button>
+          </Navbar.Text>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+    {
+      registrationToggle ? (
+        <div className="center">
+          <Form onSubmit={e => submitRegistration({e: e})}>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
+              <Form.Text className="text-muted">
+                We'll never share your email with anyone else.
+              </Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Zarejestruj
+            </Button>
+          </Form>
+        </div>
+      ) : (
+        <div className="center" style={{width: 300, margin: '50px auto '}}>
+          <h1 style={{textAlign: 'center'}}>Logowanie</h1>
+          <Form onSubmit={e => submitLogin({e: e})}>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
+              <Form.Text className="text-muted">
+                We'll never share your email with anyone else.
+              </Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Zaloguj
+            </Button>
+          </Form>
+        </div>
+      )
+    }
+        </div>
+      )}
+
+    </div>
+  );
+    }
+}
 
 function App() {
   return (
-    <div className="App">
-        <Nav />
-
-
-
-        <div className="container-fluid">
-            <div className="row">
-                <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-
-                    <BrowserRouter>
-
-                        <div className="btn-toolbar mb-2 mb-md-0">
-                            <Link to={'/admin/products/create'} className='btn btn-sm btn-outline-secondary'>Add</Link>
-                        </div>
-                        <Routes>
-                            <Route path='/' element={<Main/>}/>
-                            <Route path='/admin/products' element={<Products/>}/>
-                            <Route path='/admin/products/create' element={<ProductsCreate/>}/>
-                            <Route path='/admin/products/:id/edit' element={<ProductsEdit/>}/>
-                        </Routes>
-                    </BrowserRouter>
-
-                </main>
-            </div>
-        </div>
-    </div>
+    <BrowserRouter>
+      <Root />
+    </BrowserRouter>
   );
 }
 
 export default App;
+
+
