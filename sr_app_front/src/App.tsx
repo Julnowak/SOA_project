@@ -43,15 +43,15 @@ function Root() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    client.get("http://127.0.0.1:8001/api/user/")
-    .then(function(res) {
-      setCurrentUser(true);
-    })
-    .catch(function(error) {
-      setCurrentUser(false);
-    });
+          setIsLoading(false);
+        }, 500);
+        client.get("http://127.0.0.1:8001/api/user/")
+        .then(function(res) {
+          setCurrentUser(true);
+        })
+        .catch(function(error) {
+          setCurrentUser(false);
+        });
 
     return () => clearTimeout(timer);
   }, []);
@@ -105,7 +105,6 @@ function Root() {
         const name = response.data.username;
         const user_type = response.data.user_type;
         const user_id = response.data.id;
-        console.log(user_type)
 
         localStorage.setItem('email', em);
         localStorage.setItem('username', name);
@@ -113,6 +112,7 @@ function Root() {
         localStorage.setItem('user_id', user_id);
 
         setCurrentUser(true);
+
         if (user_type === 'producent'){
             navigate('/admin/products/')
         }

@@ -33,5 +33,9 @@ urlpatterns = [
             'delete': 'destroy'
         }
     )),
-
+    path('products/<str:pk>/like',ProductViewSet.as_view(
+        {
+            'post': 'like',
+        }
+    )),
 ]

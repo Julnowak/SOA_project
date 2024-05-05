@@ -1,22 +1,31 @@
 import React, {useEffect, useState} from "react";
 import {Product} from "../interfaces/product";
 import {Link} from "react-router-dom";
-import Main from "../components/Main";
 
 const Products = () => {
     const [products, setProducts] = useState([] as Product[])
     const [available, setAvailable] = useState(false)
+    const [username, setUsername] = useState(localStorage.getItem('username') as string | null)
 
     useEffect(
         () => {
           ( async () => {
-              const response = await fetch('http://localhost:8000/api/products/', {
+              try {
+              const response = await fetch('http://127.0.0.1:8001/api/productuser/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                      username,
+                  })
                 });
 
               const data = await response.json();
 
               setProducts(data);
               setAvailable(true);
+          } catch {
+                  console.log('dddd')
+              }
           }
           )();
 
@@ -35,9 +44,7 @@ const Products = () => {
 
 
     if (available){
-
-    }
-    return (
+        return (
         <div>
 
             <h1>Witaj, {localStorage.getItem('username')}!</h1>
@@ -83,6 +90,15 @@ const Products = () => {
             </div>
         </div>
     );
+
+    }
+    else{
+        return (<div>
+                ddd
+            </div>
+    )
+    }
+
 };
 
 export default Products;

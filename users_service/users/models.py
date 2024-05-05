@@ -48,8 +48,20 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
+    price = models.FloatField(default=0.00, null=True)
+    image = models.ImageField(null=True)
+    is_bought = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name + "_" + str(self.id)
 
+
+class UserProduct(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+
+class UserLike(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)

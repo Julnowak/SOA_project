@@ -43,5 +43,13 @@ class ProductViewSet(viewsets.ViewSet):
     def destroy(self,request,pk=None):
         product = Product.objects.get(id=pk)
         product.delete()
-        publish('product_created', pk)
+        publish('product_deleted', pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def like(self, request, pk=None):
+        product = Product.objects.get(id=pk)
+        serializer = ProductSerializer(instance=product)
+        d = serializer.data
+        d['username'] = request.data['username']
+        publish('product_liked', d)
+        return Response(status=status.HTTP_200_OK)

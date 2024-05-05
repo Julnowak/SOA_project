@@ -4,6 +4,8 @@ import {Link} from "react-router-dom";
 
 const Main = () => {
     const [products, setProducts] = useState([] as Product[]);
+    const [username, setUsername] = useState('' as string| null);
+
 
     useEffect(() => {
         (
@@ -11,16 +13,20 @@ const Main = () => {
                 const response = await fetch('http://localhost:8000/api/products/');
 
                 const data = await response.json();
-
+                const un = localStorage.getItem('username')
+                setUsername(un);
                 setProducts(data);
             }
         )();
     }, []);
 
     const like = async (id: number) => {
-        await fetch(`http://localhost:8000/api/products/${id}/like/`, {
+        await fetch(`http://localhost:8000/api/products/${id}/like`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              username,
+          })
         });
 
         setProducts(products.map(
@@ -32,6 +38,7 @@ const Main = () => {
                 return p;
             }
         ));
+
     }
 
 
@@ -48,11 +55,13 @@ const Main = () => {
                                         (p: Product) => {
                                             return (
                                                 <div className="col-md-4" key={p.id}>
-                                                    <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
-                                                          state = {{ products: p }}>
+
                                                     <div className="card mb-4 shadow-sm">
                                                         <div className="card-body">
-                                                            <p className="card-text">{p.name}</p>
+                                                            <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
+                                                            state = {{ products: p }}>
+                                                            <img src={`http://localhost:8000${p.image}`} height="180" alt={p.image}/>
+                                                            <p className="card-text">{p.name}</p></Link>
                                                             <div className="d-flex justify-content-between align-items-center">
                                                                 <div className="btn-group">
                                                                     <button type="button"
@@ -62,11 +71,11 @@ const Main = () => {
                                                                         Like
                                                                     </button>
                                                                 </div>
-                                                                <small className="text-muted">{p.likes} likes</small>
+                                                                <small className="text-muted">{p.price} zł</small>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    </Link>
+
                                                 </div>
                                             )
                                         }
