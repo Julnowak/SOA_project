@@ -37,6 +37,7 @@ function Root() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [user_type, setUserType] = useState('');
     const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState(true);
@@ -71,21 +72,28 @@ function Root() {
   function submitRegistration({e}: { e: any }) {
     e.preventDefault();
     client.post(
-      "http://127.0.0.1:8001/api/register",
+      "http://127.0.0.1:8001/api/register/",
       {
         email: email,
         username: username,
-        password: password
+        password: password,
+        user_type: user_type
       }
     ).then(function(res) {
       client.post(
-        "http://127.0.0.1:8001/api/login",
+        "http://127.0.0.1:8001/api/login/",
         {
           email: email,
           password: password
         }
       ).then(function(res) {
         setCurrentUser(true);
+        if (user_type === 'producent'){
+            navigate('/admin/products/')
+        }
+        else{
+            navigate('/admin/clientPanel/')
+        }
       });
     });
   }
@@ -155,7 +163,7 @@ function Root() {
             <LoadingSpinner />
           ) : (
             <div className="fade-in">
-<Navbar bg="dark" variant="dark">
+        <Navbar bg="dark" variant="dark">
           <Container>
               <Navbar.Brand href="http://127.0.0.1:3000/">HOME</Navbar.Brand>
               <Navbar.Brand href="http://127.0.0.1:3000/admin/products">
@@ -221,21 +229,24 @@ function Root() {
     </Navbar>
     {
       registrationToggle ? (
-        <div className="center">
+        <div className="center" style={{width: 300, margin: '50px auto '}}>
+          <h1 style={{textAlign: 'center'}}>Rejestracja</h1>
           <Form onSubmit={e => submitRegistration({e: e})}>
+              <Form.Group className="mb-3" controlId="formBasicUsername">
+                  <Form.Label>Typ użytkownika:</Form.Label>
+                  <Form.Check label='Producent' type="radio" name='user_type' onChange={e => setUserType('producent')} defaultChecked />
+                  <Form.Check label='Klient' type="radio" name='user_type' onChange={e => setUserType('klient')} />
+              </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>Adres email:</Form.Label>
               <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
-              <Form.Text className="text-muted">
-                We'll never share your email with anyone else.
-              </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicUsername">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Login</Form.Label>
               <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Hasło</Form.Label>
               <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
             </Form.Group>
             <Button variant="primary" type="submit">
@@ -248,14 +259,11 @@ function Root() {
           <h1 style={{textAlign: 'center'}}>Logowanie</h1>
           <Form onSubmit={e => submitLogin({e: e})}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>Adres email</Form.Label>
               <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
-              <Form.Text className="text-muted">
-                We'll never share your email with anyone else.
-              </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Hasło</Form.Label>
               <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
             </Form.Group>
             <Button variant="primary" type="submit">

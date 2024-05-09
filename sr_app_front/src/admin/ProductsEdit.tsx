@@ -4,6 +4,9 @@ import {Product} from "../interfaces/product";
 
 const ProductsEdit = (props: PropsWithRef<any>) => {
     const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+    const [image, setImage] = useState('');
+    const [imageURL, setImageURL] = useState('');
     const [redirect, setRedirect] = useState(false);
     const params = useParams();
 
@@ -15,23 +18,36 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
                 const product: Product = await response.json();
 
                 setName(product.name);
+                setPrice(`${product.price}`);
+                setImage(product.image);
             }
         )();
-    }, []);
+    }, [params.id]);
     
     const submit = async (e: SyntheticEvent) => {
       e.preventDefault();
 
+      const formData = new FormData();
+      formData.append('image', image);
+      formData.append('name', name);
+      formData.append('price', price);
+
       await fetch(`http://localhost:8000/api/products/${params.id}`, {
           method: 'PUT',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-              name,
-          })
+          body: formData,
       });
 
       setRedirect(true);
     };
+
+    // @ts-ignore
+    function handleChange(e) {
+        setImageURL(URL.createObjectURL(e.target.files[0]));
+        setImage(e.target.files[0])
+
+        console.log(imageURL)
+    }
+
 
     if (redirect){
         return <Navigate to={'/admin/products'}/>
@@ -44,6 +60,15 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
                     <label>Name</label>
                     <input type='text' defaultValue={name} className="form-control" name="name"
                     onChange={e => setName(e.target.value)}/>
+
+                    <label>Obraz</label>
+                    <img src={imageURL} defaultValue={image} style={{height: 300}} alt={''}/>
+                    <input type='file' className="form-control" name="title"
+                    onChange={handleChange} alt={'None'}/>
+
+                    <label>Price</label>
+                    <input type='number' defaultValue={price} className="form-control" name="title"
+                    onChange={e => setPrice(e.target.value)}/>
                 </div>
                 <button type='submit' className='btn btn-outline-secondary'>Save</button>
             </form>

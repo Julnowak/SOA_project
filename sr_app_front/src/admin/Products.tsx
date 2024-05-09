@@ -29,7 +29,7 @@ const Products = () => {
           }
           )();
 
-        }, []);
+        }, [username]);
     
     const del = async (id: number) => {
         if (window.confirm("Do you want to delete item?")){
@@ -58,9 +58,11 @@ const Products = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Likes</th>
-                    <th>Action</th>
+                     <th>Obraz</th>
+                    <th>Nazwa</th>
+                    <th>Polubienia</th>
+                    <th>Cena</th>
+                    <th>Akcja</th>
                   </tr>
                 </thead>
 
@@ -69,7 +71,9 @@ const Products = () => {
                     return (
                         <tr key={p.id}>
                           <td>{p.id}</td>
+                           <td><img src={`http://localhost:8000${p.image}`} style={{height: 100}} alt={''}/></td>
                           <td>{p.name}</td>
+                          <td>{p.price}</td>
                           <td>{p.likes}</td>
                           <td>
                               <div className="btn-group mr-2">
