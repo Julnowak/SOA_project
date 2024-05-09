@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { useLocation, Link } from "react-router-dom";
+import {useLocation, Link, useParams} from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import {Product} from "../interfaces/product";
 
@@ -8,42 +8,41 @@ const { state } = useLocation();
 console.log(state)
 
 const [product, setProduct] = useState('');
+const [name, setName] = useState('');
+const [price, setPrice] = useState('');
+const [image, setImage] = useState('');
+const [likes, setLikes] = useState('');
+const params = useParams();
 
- useEffect(
-    () => {
-      ( async () => {
-          try {
-          const response = await fetch(`http://localhost:8000/api/products/${state.products.id}`, {
-            });
 
-          const response2 = await fetch(`http://localhost:8001/api/productuser/${state.products.id}`, {
-            });
+useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`http://localhost:8000/api/products/${params.id}`);
 
-          const data = await response.json();
-          const data2 = await response2.json();
-          console.log(data2)
+                const product: Product = await response.json();
 
-          setProduct(data);
-      } catch {
-              console.log('dddd')
-          }
-      }
-      )();
+                setName(product.name);
+                setPrice(`${product.price}`);
+                setImage(product.image);
+                // setLikes(product.likes);
+            }
+        )();
+    }, [params.id]);
 
-    }, []);
 
   return (
       <div>
           <Form>
             <div style={{alignItems: 'center', justifyContent: 'center', display: 'flex'}}>
-                <img  src={`http://localhost:8000${state.products.image}`} height={'400'}/>
+                <img  src={`http://localhost:8000${image}`} height={'400'}/>
             </div>
             <div>
 
               <div>
-                <h1>{state.products.name}{" "}</h1>
-                <h3>{state.products.price}{" "} zł</h3>
-                <h5>Polubienia: {state.products.likes}{" "}</h5>
+                <h1>{name}{" "}</h1>
+                <h3>{price}{" "} zł</h3>
+                <h5>Polubienia: {likes}{" "}</h5>
               </div>
             </div>
           </Form>

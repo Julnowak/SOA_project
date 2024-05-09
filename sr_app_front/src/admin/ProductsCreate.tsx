@@ -16,7 +16,7 @@ const ProductsCreate = () => {
       formData.append('image', image);
       formData.append('name', name);
       formData.append('price', price);
-        console.log(formData.values())
+
       await fetch('http://localhost:8000/api/products/', {
           method: 'POST',
           body: formData,
@@ -39,7 +39,7 @@ const ProductsCreate = () => {
     }
 
     return (
-        <div>
+        <div className="center" style={{width: 300, margin: '50px auto '}}>
             <form onSubmit={submit}>
                 <div className="form-group">
                     <label>Name</label>

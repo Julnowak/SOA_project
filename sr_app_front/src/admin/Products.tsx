@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Product} from "../interfaces/product";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const Products = () => {
     const [products, setProducts] = useState([] as Product[])
@@ -42,6 +42,11 @@ const Products = () => {
         }
     };
 
+    const navigate = useNavigate();
+    // @ts-ignore
+    const goRouteId = (id) => {
+       navigate(`/products_view/${id}`);
+      }
 
     if (available){
         return (
@@ -69,12 +74,13 @@ const Products = () => {
                 <tbody>
                 {products.map((p:Product) => {
                     return (
-                        <tr key={p.id}>
-                          <td>{p.id}</td>
-                           <td><img src={`http://localhost:8000${p.image}`} style={{height: 100}} alt={''}/></td>
-                          <td>{p.name}</td>
-                          <td>{p.price}</td>
-                          <td>{p.likes}</td>
+
+                        <tr key={p.id} >
+                          <td onClick={()=> goRouteId(p.id)}>{p.id}</td>
+                          <td onClick={()=> goRouteId(p.id)}><img src={`http://localhost:8000${p.image}`} style={{height: 100}} alt={''}/></td>
+                          <td onClick={()=> goRouteId(p.id)}>{p.name}</td>
+                          <td onClick={()=> goRouteId(p.id)}>{p.likes}</td>
+                          <td onClick={()=> goRouteId(p.id)}>{p.price}</td>
                           <td>
                               <div className="btn-group mr-2">
                                   <a href='#' className='btn btn-sm btn-outline-secondary'
@@ -85,6 +91,7 @@ const Products = () => {
                               </div>
                           </td>
                         </tr>
+
                     )
                 })}
 

@@ -7,6 +7,7 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
     const [imageURL, setImageURL] = useState('');
+    const [flag, setFlag] = useState(false)
     const [redirect, setRedirect] = useState(false);
     const params = useParams();
 
@@ -28,10 +29,14 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
       e.preventDefault();
 
       const formData = new FormData();
-      formData.append('image', image);
+      // formData.append('image', image);
       formData.append('name', name);
       formData.append('price', price);
-
+      formData.append('image', image);
+      // @ts-ignore
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
       await fetch(`http://localhost:8000/api/products/${params.id}`, {
           method: 'PUT',
           body: formData,
@@ -44,8 +49,7 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
     function handleChange(e) {
         setImageURL(URL.createObjectURL(e.target.files[0]));
         setImage(e.target.files[0])
-
-        console.log(imageURL)
+        setFlag(true);
     }
 
 
@@ -53,8 +57,9 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
         return <Navigate to={'/admin/products'}/>
     }
 
-    return (
-        <div>
+    if (flag){
+        return (
+        <div className="center" style={{width: 300, margin: '50px auto '}}>
             <form onSubmit={submit}>
                 <div className="form-group">
                     <label>Name</label>
@@ -62,8 +67,31 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
                     onChange={e => setName(e.target.value)}/>
 
                     <label>Obraz</label>
-                    <img src={imageURL} defaultValue={image} style={{height: 300}} alt={''}/>
-                    <input type='file' className="form-control" name="title"
+                    <img src={imageURL} defaultValue={`http://localhost:8000${image}`} style={{height: 300}} alt={''}/>
+                    <input type='file'  className="form-control" name="title"
+                    onChange={handleChange} alt={'None'}/>
+
+                    <label>Price</label>
+                    <input type='number' defaultValue={price} className="form-control" name="title"
+                    onChange={e => setPrice(e.target.value)}/>
+                </div>
+                <button type='submit' className='btn btn-outline-secondary'>Save</button>
+            </form>
+        </div>
+    );
+    }
+
+    return (
+        <div className="center" style={{width: 300, margin: '50px auto '}}>
+            <form onSubmit={submit}>
+                <div className="form-group">
+                    <label>Name</label>
+                    <input type='text' defaultValue={name} className="form-control" name="name"
+                    onChange={e => setName(e.target.value)}/>
+
+                    <label>Obraz</label>
+                    <img src={`http://localhost:8000${image}`} defaultValue={`http://localhost:8000${image}`} style={{height: 300}} alt={''}/>
+                    <input type='file'  className="form-control" name="title"
                     onChange={handleChange} alt={'None'}/>
 
                     <label>Price</label>
