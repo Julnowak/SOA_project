@@ -20,6 +20,8 @@ class UserRegister(APIView):
         serializer = UserRegisterSerializer(data=validated_data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.create(validated_data)
+            user.user_type = validated_data['user_type']
+            user.save()
             if user:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status.HTTP_400_BAD_REQUEST)
