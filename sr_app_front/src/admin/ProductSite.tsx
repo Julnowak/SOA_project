@@ -65,9 +65,9 @@ useEffect(() => {
             </div>
           </Form>
 
-          <Link to='#'>Kup produkt</Link>
+          {userType == 'klient'? <Link to="#">Kup produkt</Link>: null }
           <br/>
-          {userType == 'klient'? <Link to={{pathname:`/createChatroom/${params.id}`}}>Negocjuj</Link>: null }
+          {userType == 'klient'? <Link to={`/createChatroom/${params.id}`}>Negocjuj</Link>: null }
 
 
       </div>

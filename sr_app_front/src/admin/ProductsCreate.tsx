@@ -55,7 +55,7 @@ const ProductsCreate = () => {
                     onChange={handleChange} alt={'None'}/>
 
                     <label>Price</label>
-                    <input type='number' className="form-control" name="title"
+                    <input type='number' step="0.01" min="0.00" className="form-control" name="title"
                     onChange={e => setPrice(e.target.value)}/>
                 </div>
                 <button type='submit' className='btn btn-outline-secondary'>Save</button>

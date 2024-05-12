@@ -10,9 +10,10 @@ const CrateChatroom = () => {
       const [room, setRoom] = useState(0); // id
       const [productId, setProductId] = useState(0); //id
       const params = useParams();
+      const [flag, setFlag] = useState(true);
 
 
-      if (username && seller && seller && seller != username){
+      if (username && params.id){
       (
         async () => {
             const response = await fetch(`http://127.0.0.1:8001/api/productuser/${params.id}`);
@@ -24,10 +25,11 @@ const CrateChatroom = () => {
             setProductName(product.name);
             setProductId(product.id);
             }
-        )();}
+        )();
+      }
 
 
-      if (username && seller  && seller && seller != username){
+      if (username && seller && seller != username && params.id && productId  && flag){
 
         ( async () => {
               try {
@@ -46,23 +48,27 @@ const CrateChatroom = () => {
               console.log(data);
               setRoom(data.id);
 
+
           } catch
               {
                   console.log('ddgege')
               }
           }
-    )();}
+
+    )();
+        console.log(room)
+      setFlag(false);}
 
       const navigate = useNavigate();
-      if (room){
+      if (room && !flag){
           navigate(`/chatroom/${room}`)
       }
 
-    return (
-        <div>
-
-        </div>
-    );
+        return (
+            <div>
+                HELLO
+            </div>
+        );
 };
 
 export default CrateChatroom;

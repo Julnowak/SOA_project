@@ -6,6 +6,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .producer import publish
 from .serializers import MessageSerializer, RoomSerializer
 from chat.models import Message, Room
 
@@ -32,25 +33,22 @@ class RoomView(APIView):
 
     def post(self, request):
         print(request.data)
+
         buyer = request.data['username']
         seller = request.data['seller']
-        user_type = request.data['user_type']
-        id = request.data['room']
+        id = request.data['productId']
 
-        print(id)
-
-        try:
-            chatroom = Room.objects.get(id = int(id))
-            print('tried')
-        except:
-            product = request.data['product']
-            if buyer != seller:
-                chatroom = Room.objects.create(buyer=buyer, seller=seller, product=product)
-            else:
-                chatroom = Room.objects.get(id=int(id))
-            print('Not ok')
+        if Room.objects.filter(buyer=buyer, seller=seller, product=id).exists():
+            chatroom = Room.objects.get(buyer=buyer, seller=seller, product=id)
+            serializerRoom = RoomSerializer(chatroom)
+            print('get')
+        else:
+            chatroom = Room.objects.create(buyer=buyer, seller=seller, product=id)
+            serializerRoom = RoomSerializer(chatroom)
+            publish('negotiation_created', serializerRoom)
+            print('create')
         print(chatroom)
-        serializerRoom = RoomSerializer(chatroom)
+
         return Response(serializerRoom.data, status=status.HTTP_200_OK)
 
 
@@ -64,7 +62,19 @@ class ChatRoomIdView(APIView):
         messages = Message.objects.filter(room=chatroom)
         serializerMessages = MessageSerializer(messages, many=True)
 
-        return Response(serializerMessages.data, status=status.HTTP_200_OK)
+        return Response([serializerMessages.data, serializerRoom.data], status=status.HTTP_200_OK)
+
+
+class EndNegotiation(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, room_id=None):
+        chatroom = Room.objects.get(id=room_id)
+        chatroom.status = "Zakończono"
+        chatroom.save()
+        serializerRoom = RoomSerializer(chatroom)
+        return Response(serializerRoom.data, status=status.HTTP_200_OK)
 
 
 def index(request):

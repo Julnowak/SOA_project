@@ -4,7 +4,7 @@ import time
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-
+from channels.layers import get_channel_layer
 from chat.models import Message, Room
 
 
@@ -17,7 +17,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-
+        print(get_channel_layer())
         await self.accept()
 
     async def disconnect(self, close_code):

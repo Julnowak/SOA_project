@@ -48,6 +48,8 @@ const Products = () => {
        navigate(`/products_view/${id}`);
       }
 
+
+
     if (available){
         return (
         <div>

@@ -7,6 +7,7 @@ interface Negotiation{
     seller: string;
     buyer: string;
     product: string;
+    status: string;
 }
 
 const Negotiations = () => {
@@ -61,21 +62,25 @@ const goRouteId = (room) => {
             <th>#</th>
              <th>Nr produktu</th>
             <th>Nazwa</th>
-            <th>Sprzedający</th>
+            <th>Sprzedawca</th>
+            <th>Nabywca</th>
             <th>Cena</th>
             <th>Status</th>
           </tr>
         </thead>
 
         <tbody>
-        {negotiations.map((p:Negotiation) => {
+        {negotiations.map((n:Negotiation) => {
                             return (
 
-                                <tr key={p.id} >
-                                  <td onClick={()=> goRouteId(p.id)}>{p.id}</td>
-                                  <td onClick={()=> goRouteId(p.id)}>{p.product}</td>
-                                    <td onClick={()=> goRouteId(p.id)}>###########</td>
-                                    <td onClick={()=> goRouteId(p.id)}>{p.seller}</td>
+                                <tr key={n.id} >
+                                  <td onClick={()=> goRouteId(n.id)}>{n.id}</td>
+                                  <td onClick={()=> goRouteId(n.id)}>{n.product}</td>
+                                    <td onClick={()=> goRouteId(n.id)}>###########</td>
+                                    <td onClick={()=> goRouteId(n.id)}>{n.seller}</td>
+                                    <td onClick={()=> goRouteId(n.id)}>{n.buyer}</td>
+                                    <td onClick={()=> goRouteId(n.id)}>#######</td>
+                                    <td onClick={()=> goRouteId(n.id)}>{n.status}</td>
                                   <td >
                                       <div className="btn-group mr-2">
 
