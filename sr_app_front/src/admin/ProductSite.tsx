@@ -12,6 +12,7 @@ const [price, setPrice] = useState('');
 const [image, setImage] = useState('');
 const [likes, setLikes] = useState('');
 const [seller, setSeller] = useState('');
+const [userType, setUserType] = useState(localStorage.getItem('user_type') as string | null)
 const params = useParams();
 
 
@@ -51,7 +52,7 @@ useEffect(() => {
       <div>
           <Form>
             <div style={{alignItems: 'center', justifyContent: 'center', display: 'flex'}}>
-                <img  src={`http://localhost:8000${image}`} height={'400'}/>
+                <img  src={`http://localhost:8000${image}`} height={'400'} />
             </div>
             <div>
 
@@ -66,7 +67,8 @@ useEffect(() => {
 
           <Link to='#'>Kup produkt</Link>
           <br/>
-          <Link to={`/chatroom/${params.id}`}>Negocjuj</Link>
+          {userType == 'klient'? <Link to={{pathname:`/createChatroom/${params.id}`}}>Negocjuj</Link>: null }
+
 
       </div>
 

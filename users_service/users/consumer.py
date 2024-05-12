@@ -23,7 +23,8 @@ def callback(ch, method, properties, body):
                               likes=data['likes'])
             product.save()
 
-            UserProduct.objects.create(user=AppUser.objects.get(username=data['username']), product=product)
+            if not UserProduct.objects.filter(user=AppUser.objects.get(username=data['username']), product=product).exists():
+                UserProduct.objects.create(user=AppUser.objects.get(username=data['username']), product=product)
             print('created')
         elif properties.content_type == 'product_updated':
             product = Product.objects.get(data['id'])
@@ -46,7 +47,7 @@ def callback(ch, method, properties, body):
             product.save()
             print('liked')
 
-    except:
+    except KeyError:
         print('Something went wrong.')
 
 

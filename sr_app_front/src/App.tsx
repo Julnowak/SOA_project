@@ -20,6 +20,7 @@ import ClientPanel from "./admin/clientPanel";
 import Negotiations from "./admin/Negotiations";
 import History from "./admin/History";
 import Chatroom from "./admin/Chatroom";
+import CrateChatroom from "./admin/CrateChatroom";
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -38,7 +39,7 @@ function Root() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [user_type, setUserType] = useState('');
+    const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
     const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState(true);
@@ -167,7 +168,7 @@ function Root() {
         <Navbar bg="dark" variant="dark">
           <Container>
               <Navbar.Brand href="http://127.0.0.1:3000/">HOME</Navbar.Brand>
-              <Navbar.Brand href="http://127.0.0.1:3000/admin/products">
+              <Navbar.Brand href= {'klient' == user_type ? "http://127.0.0.1:3000/admin/clientPanel/" : "http://127.0.0.1:3000/admin/products/"}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-person"
                        viewBox="0 0 16 16">
                     <path
@@ -204,6 +205,7 @@ function Root() {
                <Route path='/admin/products/:id/edit' element={<ProductsEdit/>}/>
                <Route path='/products_view/:id' element={<ProductSite/>}/>
                <Route path='/chatroom/:id' element={<Chatroom/>}/>
+               <Route path='/createChatroom/:id' element={<CrateChatroom/>}/>
            </Routes>
             </div>
           )}

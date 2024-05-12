@@ -12,9 +12,9 @@ const Chatroom = () => {
   const [socket, setSocket] = useState<WebSocket|null>(null);
   const [username, setUsername] = useState<string|null|Message>("");
   const [seller, setSeller] = useState("");
+  const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
   const [product, setProduct] = useState(0); // id
   const [productName, setProductName] = useState("");
-  const [room, setRoom] = useState(0); // id
   const [message, setMessage] = useState<string|null>();
   const [messages, setMessages] = useState([] as Message[]);
   const params = useParams();
@@ -22,57 +22,18 @@ const Chatroom = () => {
   useEffect(() => {
     setUsername(localStorage.getItem("username"));
 
-    (
-        async () => {
-            const response = await fetch(`http://127.0.0.1:8001/api/productuser/${params.id}`);
-
-            const product: Product = await response.json();
-
-            // @ts-ignore
-            setSeller(product.username);
-            setProductName(product.name)
-            setProduct(product.id)
-        }
-    )();
-
-    if (username && seller && product){
-        ( async () => {
-              try {
-              const response = await fetch('http://127.0.0.1:8002/api/chatroom/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                      username,
-                      seller,
-                      product
-                  })
-                });
-
-              const data = await response.json();
-              console.log(data);
-              setRoom(data.id);
-
-          } catch
-              {
-                  console.log('ddgege')
-              }
-          }
-    )();
-    }
-
-
-    if (username && seller && product && room){
+    if (username && params.id){
             ( async () => {
               try {
-              const response = await fetch(`http://127.0.0.1:8002/api/chatroom/${room}`, {
+              const response = await fetch(`http://127.0.0.1:8002/api/chatroom/${params.id}`, {
                     method: 'GET',
                     headers: {'Content-Type': 'application/json'},
                 });
 
               const dataM = await response.json();
-              console.log(dataM);
+
               /// Odznaczyć potem
-              // setMessages(dataM);
+              setMessages(dataM);
           } catch {
                   console.log('dddd')
               }
@@ -86,8 +47,8 @@ const Chatroom = () => {
   useEffect(() => {
     setUsername(localStorage.getItem("username"));
 
-    if (username && room) {
-      const newSocket = new WebSocket(`ws://127.0.0.1:8002/ws/chat/${room}/`);
+    if (username && params.id) {
+      const newSocket = new WebSocket(`ws://127.0.0.1:8002/ws/chat/${params.id}/`);
       // @ts-ignore
         setSocket(newSocket);
         newSocket.onopen = () => console.log("WebSocket connected");
@@ -99,7 +60,7 @@ const Chatroom = () => {
         newSocket.close();
       };
     }
-  }, [username, room]);
+  }, [username, params.id]);
 
   useEffect(() => {
     if (socket) {
@@ -108,7 +69,7 @@ const Chatroom = () => {
         const data = JSON.parse(event.data);
 
         // @ts-ignore
-        // setMessages((prevMessages) => [...prevMessages, data]);
+        setMessages((prevMessages) => [...prevMessages, data]);
 
       };
     }
@@ -125,7 +86,7 @@ const Chatroom = () => {
       const data = {
         message: message,
         username: username,
-        room: room
+        room: params.id
       };
         socket.send(JSON.stringify(data));
       setMessage(null);
@@ -140,7 +101,7 @@ const Chatroom = () => {
         </div>
 
         <div className="chat-container">
-          <div className="chat-header">Nr negocjacji: {room}</div>
+          <div className="chat-header">Nr negocjacji: {params.id}</div>
           <div className="message-container">
             {messages.map((message, index) => (
               <div key={index} className="message">

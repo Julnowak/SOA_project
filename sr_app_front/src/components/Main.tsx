@@ -67,7 +67,9 @@ const Main = () => {
                                                         <div className="card-body">
                                                             <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
                                                             state = {{ products: p }}>
-                                                            <img src={`http://localhost:8000${p.image}`} height="180" alt={p.image}/>
+                                                                <div style={{ height: 180, width: 180}}>
+                                                                    <img style={{objectFit: 'contain', height: '100%', width: '100%'}} src={`http://localhost:8000${p.image}`} alt={p.image}/>
+                                                                </div>
                                                             <p className="card-text">{p.name}</p></Link>
                                                             <div className="d-flex justify-content-between align-items-center">
                                                                 <div className="btn-group">

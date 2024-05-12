@@ -51,8 +51,8 @@ const Products = () => {
     if (available){
         return (
         <div>
-
-            <h1>Witaj, {localStorage.getItem('username')}!</h1>
+            <h1>Panel producenta</h1>
+            <h3>Witaj, {localStorage.getItem('username')}!</h3>
 
             <div className="btn-toolbar mb-2 mb-md-0">
                 <Link to={'/admin/products/create'} className='btn btn-sm btn-outline-secondary'>Add</Link>

@@ -33,7 +33,7 @@ useEffect(
                 });
 
               const data = await response.json();
-                console.log(data)
+                // console.log(data)
               setNegotiations(data);
           } catch {
                   console.log('dddd')
@@ -48,47 +48,49 @@ useEffect(
 
 const navigate = useNavigate();
     // @ts-ignore
-const goRouteId = (id) => {
-   navigate(`/chatroom/${id}`);
+const goRouteId = (room) => {
+   navigate(`/chatroom/${room}`);
   }
       
   return (
-    <div className="table-responsive">
-<table className="table table-striped table-sm">
-<thead>
-  <tr>
-    <th>#</th>
-     <th>Nr produktu</th>
-    <th>Nazwa</th>
-    <th>Sprzedający</th>
-    <th>Cena</th>
-  </tr>
-</thead>
+    <div>
+        <h1>Twoje negocjacje</h1>
+        <table className="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>#</th>
+             <th>Nr produktu</th>
+            <th>Nazwa</th>
+            <th>Sprzedający</th>
+            <th>Cena</th>
+            <th>Status</th>
+          </tr>
+        </thead>
 
-<tbody>
-{negotiations.map((p:Negotiation) => {
-                    return (
+        <tbody>
+        {negotiations.map((p:Negotiation) => {
+                            return (
 
-                        <tr key={p.id} >
-                          <td onClick={()=> goRouteId(p.product)}>{p.id}</td>
-                          <td onClick={()=> goRouteId(p.product)}>{p.product}</td>
-                            <td onClick={()=> goRouteId(p.product)}>###########</td>
-                            <td onClick={()=> goRouteId(p.product)}>{p.seller}</td>
-                          <td >
-                              <div className="btn-group mr-2">
+                                <tr key={p.id} >
+                                  <td onClick={()=> goRouteId(p.id)}>{p.id}</td>
+                                  <td onClick={()=> goRouteId(p.id)}>{p.product}</td>
+                                    <td onClick={()=> goRouteId(p.id)}>###########</td>
+                                    <td onClick={()=> goRouteId(p.id)}>{p.seller}</td>
+                                  <td >
+                                      <div className="btn-group mr-2">
 
-                              </div>
-                          </td>
-                        </tr>
+                                      </div>
+                                  </td>
+                                </tr>
 
 
-                    )
-                })}
+                            )
+                        })}
 
-</tbody>
+        </tbody>
 
-</table>
-</div>
+        </table>
+    </div>
   );
 };
 

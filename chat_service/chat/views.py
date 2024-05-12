@@ -34,17 +34,23 @@ class RoomView(APIView):
         print(request.data)
         buyer = request.data['username']
         seller = request.data['seller']
-        product = request.data['product']
+        user_type = request.data['user_type']
+        id = request.data['room']
+
+        print(id)
 
         try:
-            chatroom = Room.objects.get(buyer=buyer, seller=seller, product=product)
+            chatroom = Room.objects.get(id = int(id))
             print('tried')
         except:
-            chatroom = Room.objects.create(buyer=buyer, seller=seller, product=product)
+            product = request.data['product']
+            if buyer != seller:
+                chatroom = Room.objects.create(buyer=buyer, seller=seller, product=product)
+            else:
+                chatroom = Room.objects.get(id=int(id))
             print('Not ok')
-        print(chatroom.seller)
+        print(chatroom)
         serializerRoom = RoomSerializer(chatroom)
-        print(serializerRoom.data)
         return Response(serializerRoom.data, status=status.HTTP_200_OK)
 
 
@@ -52,9 +58,8 @@ class ChatRoomIdView(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
-    def get(self, request,room_id=None):
+    def get(self, request, room_id=None):
         chatroom = Room.objects.get(id=room_id)
-
         serializerRoom = RoomSerializer(chatroom)
         messages = Message.objects.filter(room=chatroom)
         serializerMessages = MessageSerializer(messages, many=True)
