@@ -1,116 +1,97 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Product} from "../interfaces/product";
+import {Link, useNavigate} from "react-router-dom";
 
-interface Message {
-  username: string;
-  message: string;
-  timestamp: string;
-
+interface Negotiation{
+    id: number;
+    seller: string;
+    buyer: string;
+    product: string;
 }
+
 const Negotiations = () => {
-  const [socket, setSocket] = useState<WebSocket|null>(null);
-  const [username, setUsername] = useState<string|null|Message>("");
-  const [room, setRoom] = useState("");
-  const [message, setMessage] = useState<string|null>();
-  const [messages, setMessages] = useState([] as Message[]);
-  const [activeUsers, setActiveUsers] = useState([]);
+const [username, setUsername] = useState('' as string| null);
+const [user_type, setUserType] = useState('' as string| null);
+const [negotiations, setNegotiations] = useState([] as Negotiation[]);
 
-  useEffect(() => {
-    setUsername(localStorage.getItem("username"));
-    console.log(username);
+useEffect(
+    () => {
 
-    const storedRoom = localStorage.getItem("room");
-    if (storedRoom) {
-      setRoom(storedRoom);
-    } else {
-      const input = prompt("Enter your room:");
-      if (input) {
-        setRoom(input);
-        localStorage.setItem("room", input);
-      }
-    }
+        setUsername(localStorage.getItem('username'));
+        setUserType(localStorage.getItem('user_type'));
 
-    if (username && room) {
-      const newSocket = new WebSocket(`ws://127.0.0.1:8002/ws/chat/${room}/`);
-      // @ts-ignore
-        setSocket(newSocket);
-        newSocket.onopen = () => console.log("WebSocket connected");
-        newSocket.onclose = () => {
-          console.log("WebSocket disconnected");
-          // localStorage.removeItem("username");
-          localStorage.removeItem("room");
-        };
-      return () => {
-        newSocket.close();
-      };
-    }
-  }, [username, room]);
+        if (username && user_type){
+            ( async () => {
+              try {
+              const response = await fetch('http://127.0.0.1:8002/api/allroom/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                      username,
+                      user_type,
+                  })
+                });
 
-  useEffect(() => {
-    if (socket) {
-      // @ts-ignore
-        socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.user_list) {
-          setActiveUsers(data.user_list);
-        } else {
-          // @ts-ignore
-            setMessages((prevMessages) => [...prevMessages, data]);
+              const data = await response.json();
+                console.log(data)
+              setNegotiations(data);
+          } catch {
+                  console.log('dddd')
+              }
+          }
+          )();
         }
-      };
-    }
-  }, [socket]);
 
 
+    }, [user_type, username]);
+
+
+const navigate = useNavigate();
     // @ts-ignore
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (message && socket) {
-      const data = {
-        message: message,
-        username: username,
-      };
-        socket.send(JSON.stringify(data));
-      setMessage(null);
-    }
-  };
-
+const goRouteId = (id) => {
+   navigate(`/chatroom/${id}`);
+  }
+      
   return (
-    <div className="chat-app">
-      <div className="chat-wrapper">
-        <div className="active-users-container">
-          <h2>Active Users ({activeUsers.length})</h2>
-          <ul>
-            {activeUsers.map((user, index) => (
-              <li key={index}>{user}</li>
-            ))}
-          </ul>
-        </div>
-        <div className="chat-container">
-          <div className="chat-header">Chat Room: {room}</div>
-          <div className="message-container">
-            {messages.map((message, index) => (
-              <div key={index} className="message">
+    <div className="table-responsive">
+<table className="table table-striped table-sm">
+<thead>
+  <tr>
+    <th>#</th>
+     <th>Nr produktu</th>
+    <th>Nazwa</th>
+    <th>Sprzedający</th>
+    <th>Cena</th>
+  </tr>
+</thead>
 
-                <div className="message-username">{message.username}:</div>
-                <div className="message-content">{message.message}</div>
-                <div className="message-timestamp">{message.timestamp}</div>
-              </div>
-            ))}
-          </div>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Type a message..."
-              // value={message}
-              onChange={(event) => setMessage(event.target.value)}
-            />
-            <button type="submit">Send</button>
-          </form>
-        </div>
-      </div>
-    </div>
+<tbody>
+{negotiations.map((p:Negotiation) => {
+                    return (
+
+                        <tr key={p.id} >
+                          <td onClick={()=> goRouteId(p.product)}>{p.id}</td>
+                          <td onClick={()=> goRouteId(p.product)}>{p.product}</td>
+                            <td onClick={()=> goRouteId(p.product)}>###########</td>
+                            <td onClick={()=> goRouteId(p.product)}>{p.seller}</td>
+                          <td >
+                              <div className="btn-group mr-2">
+
+                              </div>
+                          </td>
+                        </tr>
+
+
+                    )
+                })}
+
+</tbody>
+
+</table>
+</div>
   );
 };
+
+
 
 export default Negotiations;

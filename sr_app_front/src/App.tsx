@@ -19,6 +19,7 @@ import ProductSite from "./admin/ProductSite";
 import ClientPanel from "./admin/clientPanel";
 import Negotiations from "./admin/Negotiations";
 import History from "./admin/History";
+import Chatroom from "./admin/Chatroom";
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -202,6 +203,7 @@ function Root() {
                <Route path='/admin/products/create' element={<ProductsCreate/>}/>
                <Route path='/admin/products/:id/edit' element={<ProductsEdit/>}/>
                <Route path='/products_view/:id' element={<ProductSite/>}/>
+               <Route path='/chatroom/:id' element={<Chatroom/>}/>
            </Routes>
             </div>
           )}

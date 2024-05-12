@@ -8,14 +8,17 @@ const ProductsCreate = () => {
     const [image, setImage] = useState('');
     const [redirect, setRedirect] = useState(false);
     const [imageURL, setImageURL] = useState('');
-
+    const [username, setUsername] = useState<string>('');
 
     const submit = async (e: SyntheticEvent) => {
       e.preventDefault();
+
       const formData = new FormData();
       formData.append('image', image);
       formData.append('name', name);
       formData.append('price', price);
+      // @ts-ignore
+      formData.append('username', localStorage.getItem('username'));
 
       await fetch('http://localhost:8000/api/products/', {
           method: 'POST',

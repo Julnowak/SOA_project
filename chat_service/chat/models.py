@@ -4,7 +4,17 @@ from django.db import models
 # Create your models here.
 
 
+class Room(models.Model):
+    seller = models.CharField(max_length=200)
+    buyer = models.CharField(max_length=200)
+    product = models.CharField(max_length=1000)
+
+
 class Message(models.Model):
-    # sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    # username = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=200)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True, null=True)
+
+

@@ -52,6 +52,7 @@ class Product(models.Model):
     image = models.ImageField(null=True)
     is_bought = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)
+    owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name + "_" + str(self.id)

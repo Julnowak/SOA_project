@@ -10,35 +10,42 @@ const Main = () => {
     useEffect(() => {
         (
             async () => {
+                try {
                 const response = await fetch('http://localhost:8000/api/products/');
 
                 const data = await response.json();
                 const un = localStorage.getItem('username')
                 setUsername(un);
                 setProducts(data);
+                } catch {
+                  console.log('dddd')
+              }
             }
         )();
     }, []);
 
     const like = async (id: number) => {
-        await fetch(`http://localhost:8000/api/products/${id}/like`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              username,
-          })
-        });
+        try {
+            await fetch(`http://localhost:8000/api/products/${id}/like`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username,
+                })
+            });
 
-        setProducts(products.map(
-            (p: Product) => {
-                if (p.id === id) {
-                    p.likes++;
+            setProducts(products.map(
+                (p: Product) => {
+                    if (p.id === id) {
+                        p.likes++;
+                    }
+
+                    return p;
                 }
-
-                return p;
-            }
-        ));
-
+            ));
+        } catch {
+                  console.log('dddd')
+              }
     }
 
 

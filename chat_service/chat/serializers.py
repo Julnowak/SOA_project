@@ -1,8 +1,14 @@
-from .models import Message
+from .models import Message, Room
 from rest_framework import serializers
 
 
-class MessageSerializer(serializers.Serializer):
+class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        filds = '__all__'
+        fields = '__all__'
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = '__all__'

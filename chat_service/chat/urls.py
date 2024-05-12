@@ -23,4 +23,7 @@ urlpatterns = [
     path("chat/", views.index, name="index"),
     path("chat/<str:room_name>/", views.room, name="room"),
     path("messages/", views.get_messages, name="messages"),
+    path("chatroom/", views.RoomView.as_view(), name="roomView"),
+    path("allroom/", views.AllRoomView.as_view(), name="allRoomView"),
+    path("chatroom/<int:room_id>/", views.ChatRoomIdView.as_view(), name="chatroomView"),
 ]

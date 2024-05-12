@@ -7,11 +7,11 @@ const ProductSite = () => {
 const { state } = useLocation();
 console.log(state)
 
-const [product, setProduct] = useState('');
 const [name, setName] = useState('');
 const [price, setPrice] = useState('');
 const [image, setImage] = useState('');
 const [likes, setLikes] = useState('');
+const [seller, setSeller] = useState('');
 const params = useParams();
 
 
@@ -25,8 +25,24 @@ useEffect(() => {
                 setName(product.name);
                 setPrice(`${product.price}`);
                 setImage(product.image);
-                // setLikes(product.likes);
+                // @ts-ignore
+                setLikes(product.likes);
             }
+
+
+        )();
+
+        (
+            async () => {
+                const response = await fetch(`http://127.0.0.1:8001/api/productuser/${params.id}`);
+
+                const product: Product = await response.json();
+
+                // @ts-ignore
+                setSeller(product.username);
+            }
+
+
         )();
     }, [params.id]);
 
@@ -42,6 +58,7 @@ useEffect(() => {
               <div>
                 <h1>{name}{" "}</h1>
                 <h3>{price}{" "} zł</h3>
+                <h3>Sprzedawca: {seller}{" "}</h3>
                 <h5>Polubienia: {likes}{" "}</h5>
               </div>
             </div>
@@ -49,7 +66,7 @@ useEffect(() => {
 
           <Link to='#'>Kup produkt</Link>
           <br/>
-          <Link to='#'>Negocjuj</Link>
+          <Link to={`/chatroom/${params.id}`}>Negocjuj</Link>
 
       </div>
 

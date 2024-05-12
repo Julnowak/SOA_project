@@ -1,6 +1,11 @@
+import datetime
 import json
+import time
 
+from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+
+from chat.models import Message, Room
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -23,9 +28,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        print(text_data_json)
         message = text_data_json["message"]
+        username = text_data_json["username"]
+        room = text_data_json["room"]
 
-        print(message)
+        await self.save_message(username, message, room)
+
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name, {"type": "chat.message", "message": message}
@@ -37,3 +46,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"message": message}))
+
+    async def save_message(self, username, content, room):
+        # Save message to database
+        # Your code to save message to database goes here
+        await self.get_categories_value(username, content, room)
+
+    @sync_to_async
+    def get_categories_value(self, username, content, room):
+        return Message.objects.create(username=username, message=content, timestamp=datetime.datetime.now(),
+                                      room=Room.objects.get(id=int(room)))

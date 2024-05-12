@@ -21,16 +21,23 @@ class ProductViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
+        print(request.data)
         serializer = ProductSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
-        publish('product_created', serializer.data)
+
+        newdict = {'username': request.data['username']}
+        newdict.update(serializer.data)
+
+        publish('product_created', newdict)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self,request,pk=None):
         product = Product.objects.get(id=pk)
         serializer = ProductSerializer(product)
+
+
         return Response(serializer.data)
 
     def update(self,request,pk=None):
