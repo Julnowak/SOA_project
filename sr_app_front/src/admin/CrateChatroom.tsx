@@ -9,6 +9,7 @@ const CrateChatroom = () => {
       const [productName, setProductName] = useState("");
       const [room, setRoom] = useState(0); // id
       const [productId, setProductId] = useState(0); //id
+      const [productPrice, setProductPrice] = useState(0.00);
       const params = useParams();
       const [flag, setFlag] = useState(true);
 
@@ -24,6 +25,7 @@ const CrateChatroom = () => {
             setSeller(product.username);
             setProductName(product.name);
             setProductId(product.id);
+            setProductPrice(product.price);
             }
         )();
       }
@@ -39,8 +41,9 @@ const CrateChatroom = () => {
                     body: JSON.stringify({
                       username,
                       seller,
-                      user_type,
-                      productId
+                      productId,
+                      productName,
+                      productPrice
                   })
                 });
 

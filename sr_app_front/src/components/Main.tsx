@@ -64,24 +64,27 @@ const Main = () => {
                                                 <div className="col-md-4" key={p.id}>
 
                                                     <div className="card mb-4 shadow-sm">
-                                                        <div className="card-body">
-                                                            <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
-                                                            state = {{ products: p }}>
-                                                                <div style={{ height: 180, width: 180}}>
-                                                                    <img style={{objectFit: 'contain', height: '100%', width: '100%'}} src={`http://localhost:8000${p.image}`} alt={p.image}/>
-                                                                </div>
-                                                            <p className="card-text">{p.name}</p></Link>
-                                                            <div className="d-flex justify-content-between align-items-center">
-                                                                <div className="btn-group">
-                                                                    <button type="button"
-                                                                            className="btn btn-sm btn-outline-secondary"
-                                                                            onClick={() => like(p.id)}
-                                                                    >
-                                                                        Like
-                                                                    </button>
-                                                                </div>
-                                                                <small className="text-muted">{p.price} zł</small>
+                                                        <div className="card-body" >
+                                                            <div style={{height: '70%'}}>
+                                                                <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
+                                                                state = {{ products: p }}>
+                                                                    <div style={{ height: '100%', width: '100%', margin: "auto"}}>
+                                                                        <img style={{objectFit: 'contain', borderRadius: 10, height: '100%', width: '100%'}} src={`http://localhost:8000${p.image}`} alt={p.image}/>
+                                                                    </div>
+                                                                    <p style={{ margin: 10,textAlign: "center", color: "black", textDecoration: "none"}} className="card-text">{p.name}</p>
+                                                                </Link>
                                                             </div>
+
+                                                                <div style={{height: '30%'}}>
+                                                                    <div className="d-flex justify-content-between align-items-center">
+                                                                        <div className="btn-group">
+                                                                            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => like(p.id)}>
+                                                                                Like
+                                                                            </button>
+                                                                        </div>
+                                                                        <small className="text-muted">{p.price} zł</small>
+                                                                    </div>
+                                                                </div>
                                                         </div>
                                                     </div>
 

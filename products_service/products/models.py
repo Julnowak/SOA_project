@@ -9,18 +9,10 @@ class Product(models.Model):
     image = models.ImageField(default='No_photo.png')
     is_bought = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)
+    description = models.TextField(default="Brak opisu.", max_length=1500)
 
     def __str__(self):
         return self.name + "_" + str(self.id)
 
 
-class Negotiation(models.Model):
-    seller = models.CharField(max_length=200)
-    buyer = models.CharField(max_length=200)
-    status = models.CharField(max_length=200, default="W toku")
-
-
-class NegotiationProduct(models.Model):
-    negotiation = models.ForeignKey(Negotiation, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 

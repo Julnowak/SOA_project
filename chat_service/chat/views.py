@@ -34,19 +34,25 @@ class RoomView(APIView):
     def post(self, request):
         print(request.data)
 
-        buyer = request.data['username']
+        user = request.data['username']
         seller = request.data['seller']
         id = request.data['productId']
+        product_price = request.data['productPrice']
+        product_name = request.data['productName']
 
-        if Room.objects.filter(buyer=buyer, seller=seller, product=id).exists():
-            chatroom = Room.objects.get(buyer=buyer, seller=seller, product=id)
+        print(Room.objects.filter(buyer=user, seller=seller, product=id).exists())
+        if user != seller and Room.objects.filter(buyer=user, seller=seller, product=id).exists():
+            chatroom = Room.objects.get(buyer=user, seller=seller, product=id)
             serializerRoom = RoomSerializer(chatroom)
             print('get')
-        else:
-            chatroom = Room.objects.create(buyer=buyer, seller=seller, product=id)
+        elif user != seller and not Room.objects.filter(buyer=user, seller=seller, product=id).exists():
+            chatroom = Room.objects.create(buyer=user, seller=seller, product=id, new_offer_customer=float(product_price),
+                                           new_offer_producent=float(product_price), product_name=product_name)
+
             serializerRoom = RoomSerializer(chatroom)
             publish('negotiation_created', serializerRoom)
             print('create')
+
         print(chatroom)
 
         return Response(serializerRoom.data, status=status.HTTP_200_OK)

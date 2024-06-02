@@ -8,6 +8,8 @@ interface Negotiation{
     buyer: string;
     product: string;
     status: string;
+    product_name: string;
+    new_offer_producent: number;
 }
 
 const Negotiations = () => {
@@ -56,31 +58,32 @@ const goRouteId = (room) => {
   return (
     <div style={{margin: 20}}>
         <h1 style={{textAlign: "center", margin: 40}}>Twoje negocjacje</h1>
-        <table className="table table-striped table-sm">
+        <table  className="table table-striped table-sm">
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nr produktu</th>
-            <th>Nazwa</th>
-            <th>Sprzedawca</th>
-            <th>Nabywca</th>
-            <th>Cena</th>
-            <th>Status</th>
+          <tr style={{textAlign: "center"}}>
+            <th style={{border: '1px solid black'}}>ID</th>
+            <th style={{border: '1px solid black'}}>Nr produktu</th>
+            <th style={{border: '1px solid black'}}>Nazwa</th>
+            <th style={{border: '1px solid black'}}>Sprzedawca</th>
+            <th style={{border: '1px solid black'}}>Nabywca</th>
+            <th style={{border: '1px solid black'}}>Cena [zł]</th>
+            <th style={{border: '1px solid black'}}>Status</th>
+            <th style={{border: '1px solid black'}}>Strona</th>
           </tr>
         </thead>
 
         <tbody>
         {negotiations.map((n:Negotiation) => {
                             return (
-
-                                <tr key={n.id} >
-                                  <td onClick={()=> goRouteId(n.id)}>{n.id}</td>
-                                  <td onClick={()=> goRouteId(n.id)}>{n.product}</td>
-                                    <td onClick={()=> goRouteId(n.id)}>###########</td>
-                                    <td onClick={()=> goRouteId(n.id)}>{n.seller}</td>
-                                    <td onClick={()=> goRouteId(n.id)}>{n.buyer}</td>
-                                    <td onClick={()=> goRouteId(n.id)}>#######</td>
-                                    <td onClick={()=> goRouteId(n.id)}>{n.status}</td>
+                                <tr key={n.id} style={{textAlign: "center"}}>
+                                  <td style={{border: '1px solid black'}} onClick={()=> goRouteId(n.id)}>{n.id}</td>
+                                  <td style={{border: '1px solid black'}} onClick={()=> goRouteId(n.id)}>{n.product}</td>
+                                    <td style={{border: '1px solid black'}} onClick={()=> goRouteId(n.id)}>{n.product_name}</td>
+                                    <td style={{border: '1px solid black'}} onClick={()=> goRouteId(n.id)}>{n.seller}</td>
+                                    <td style={{border: '1px solid black'}} onClick={()=> goRouteId(n.id)}>{n.buyer}</td>
+                                    <td style={{border: '1px solid black'}} onClick={()=> goRouteId(n.id)}>{n.new_offer_producent}</td>
+                                    <td style={{border: '1px solid black'}} onClick={()=> goRouteId(n.id)}>{n.status}</td>
+                                    <td style={{border: '1px solid black'}}><Link to={`/products_view/${n.product}`}> Klik</Link></td>
                                   <td >
                                       <div className="btn-group mr-2">
 

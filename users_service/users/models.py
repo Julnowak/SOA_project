@@ -48,7 +48,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
-    price = models.FloatField(default=0.00, null=True)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=100)
     image = models.ImageField(null=True)
     is_bought = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)

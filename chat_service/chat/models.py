@@ -7,9 +7,11 @@ from django.db import models
 class Room(models.Model):
     seller = models.CharField(max_length=200)
     buyer = models.CharField(max_length=200)
-    product = models.CharField(max_length=1000)
+    product = models.PositiveIntegerField()
+    product_name = models.CharField(max_length=1000,blank=True, null=True)
     status = models.CharField(max_length=200, default="W toku")
-    new_offer = models.FloatField(blank=True, null=True)
+    new_offer_customer = models.DecimalField(default=0.00, decimal_places=2, max_digits=100)
+    new_offer_producent = models.DecimalField(default=0.00, decimal_places=2, max_digits=100)
 
 
 class Message(models.Model):

@@ -53,8 +53,8 @@ const Products = () => {
     if (available){
         return (
         <div>
-            <h1>Panel producenta</h1>
-            <h3>Witaj, {localStorage.getItem('username')}!</h3>
+            <h1 style={{margin: 20, textAlign: "center"}}>Panel producenta</h1>
+            <h2 style={{margin: 20, textAlign: "center"}}>Witaj, {localStorage.getItem('username')}!</h2>
 
             <div className="btn-toolbar mb-2 mb-md-0">
                 <Link to={'/admin/products/create'} className='btn btn-sm btn-outline-secondary'>Add</Link>
@@ -65,7 +65,7 @@ const Products = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                     <th>Obraz</th>
+                    <th>Obraz</th>
                     <th>Nazwa</th>
                     <th>Polubienia</th>
                     <th>Cena</th>
