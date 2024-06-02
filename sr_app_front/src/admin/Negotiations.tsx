@@ -54,13 +54,13 @@ const goRouteId = (room) => {
   }
       
   return (
-    <div>
-        <h1>Twoje negocjacje</h1>
+    <div style={{margin: 20}}>
+        <h1 style={{textAlign: "center", margin: 40}}>Twoje negocjacje</h1>
         <table className="table table-striped table-sm">
         <thead>
           <tr>
-            <th>#</th>
-             <th>Nr produktu</th>
+            <th>ID</th>
+            <th>Nr produktu</th>
             <th>Nazwa</th>
             <th>Sprzedawca</th>
             <th>Nabywca</th>

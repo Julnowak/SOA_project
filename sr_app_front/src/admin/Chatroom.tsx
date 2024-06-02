@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Product} from "../interfaces/product";
 import {useNavigate, useParams} from "react-router-dom";
+import {Button} from "react-bootstrap";
+import Form from 'react-bootstrap/Form';
+import "../Scrollbar.css"
+import Modal from "../components/Modal";
+
 
 interface Message {
   username: string;
@@ -83,6 +88,7 @@ const Chatroom = () => {
   }, [socket]);
 
 
+
     // @ts-ignore
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -122,59 +128,74 @@ const Chatroom = () => {
     <div className="chat-app">
       <div className="chat-wrapper">
         <div className="active-users-container">
-          <h2>{productName} - nr {product}</h2>
+          <h2 style={{textAlign: "center"}}>{productName} - nr {product}</h2>
         </div>
 
         <div className="chat-container">
-          <div className="chat-header">Nr negocjacji: {params.id}</div>
-          <div className="message-container" style={{marginBottom: 40, marginLeft: 10, marginRight: 10, marginTop: 10}}>
+          <div style={{textAlign: "center"}} className="chat-header">Nr negocjacji: {params.id}</div>
+          <div  className="scrollable-content"  style={{border: "1px solid lightgray", overflow: 'auto', display: "flex", flexDirection: "column", height: '600px', marginBottom: 40, marginLeft: 30, marginRight: 30, marginTop: 10}}>
             {messages.map((message, index) => (
                <div>
                 <div key={index} className="message" style={message.username == username? ({backgroundColor: "lightgray",border: "1px solid black", borderRadius: 10, padding: 10, marginLeft: 100, marginRight: 10, marginTop: 20, marginBottom:0}): {backgroundColor: "white", borderRadius: 10, border: "1px solid black", padding: 10, marginLeft: 10, marginRight: 100, marginTop: 20, marginBottom:0}}>
-                  <div className="message-content">{message.message}</div>
-                  <div className="message-timestamp">{message.timestamp.slice(0,10)}, {message.timestamp.slice(-16,-11)}</div>
+                  <div className="message-content" style={{wordWrap: "break-word"}}>{message.message}</div>
                 </div>
-                <div style={message.username == username? ({textAlign: "right", marginLeft: 100, marginRight: 10, marginTop: 0, marginBottom:0}): { marginLeft: 10, marginRight: 100, marginTop: 0, marginBottom:0}}>{message.username}</div>
+                <div style={message.username == username? ({textAlign: "right", marginLeft: 100, marginRight: 10, marginTop: 0, marginBottom:0}): { marginLeft: 10, marginRight: 100, marginTop: 0, marginBottom:0}}>
+                    {message.timestamp?.slice(0,10)}, {message.timestamp?.slice(11,16)}
+                    <div>
+                        {message.username}
+                    </div>
+                </div>
                </div>
 
             ))}
           </div>
+          <div style={{margin: 30}}>
           {status != 'Zakończono'? (
-              <form onSubmit={handleSubmit}>
-              <input
+              <Form onSubmit={handleSubmit} className="d-flex align-items-end">
+
+              <Form.Control style={{borderColor: "black", marginRight: 20}}
                 type="text"
                 placeholder="Wpisz wiadomość..."
-                // value={message}
                 onChange={(event) => setMessage(event.target.value)}
               />
-              <button type="submit">Send</button>
-            </form>
+              <Button variant="dark" style={{marginRight: 20}} type="submit">Wyślij</Button>
+            </Form>
+
+
           ) : null}
-
-
+          </div>
         </div>
       </div>
 
-      {status == 'Zakończono'? (
-          <div>
-            <button>Wznów</button>
-          </div>
+      <div style={{ margin: 30, textAlign: "center"}}>
+
+
+      {status === 'Zakończono'? (
+            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark">Wznów</Button>
       ) : null}
 
-      {user_type == 'producent' && status != 'Zakończono'? (
-          <div>
-            <button>Zaproponuj</button>
-            <button onClick={()=> end(params.id)}>Zakończ czat</button>
+      {user_type === 'producent' && status !== 'Zakończono'? (
+          <div style={{display: "inline-flex"}}>
+              <div style={{marginLeft:10, marginRight: 10}}>
+                  <Modal />
+              </div>
+
+            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark" onClick={()=> end(params.id)}>
+                Zakończ czat
+            </Button>
+
           </div>
+
       ) : null}
 
-      {user_type == 'klient' && status != 'Zakończono'? (
+      {user_type === 'klient' && status !== 'Zakończono'? (
           <div>
-            <button>Kup</button>
-            <button>Zaproponuj</button>
-            <button onClick={()=> end(params.id)}>Zakończ czat</button>
+            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark">Kup</Button>
+            <Modal />
+            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark" onClick={()=> end(params.id)}>Zakończ czat</Button>
           </div>
       ) : null}
+      </div>
 
     </div>
   );

@@ -8,7 +8,7 @@ import ProductsEdit from "./admin/ProductsEdit";
 import Homepage from "./components/Homepage";
 import axios from 'axios'
 import {useState, useEffect} from 'react'
-
+import "./Scrollbar.css"
 
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
@@ -237,23 +237,23 @@ function Root() {
           <h1 style={{textAlign: 'center'}}>Rejestracja</h1>
           <Form onSubmit={e => submitRegistration({e: e})}>
               <Form.Group className="mb-3" controlId="formBasicUsername">
-                  <Form.Label>Typ użytkownika:</Form.Label>
-                  <Form.Check label='Producent' type="radio" name='user_type' onChange={e => setUserType('producent')} defaultChecked />
-                  <Form.Check label='Klient' type="radio" name='user_type' onChange={e => setUserType('klient')} />
+                  <Form.Label style={{marginTop: 20}}>Wybierz typ użytkownika:</Form.Label>
+                  <Form.Check  label='Producent' type="radio" name='user_type' onChange={e => setUserType('producent')} defaultChecked />
+                  <Form.Check  label='Klient' type="radio" name='user_type' onChange={e => setUserType('klient')} />
               </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Adres email:</Form.Label>
-              <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
+              <Form.Control style={{borderColor: "black"}} type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicUsername">
               <Form.Label>Login</Form.Label>
-              <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
+              <Form.Control style={{borderColor: "black"}} type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Hasło</Form.Label>
-              <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+              <Form.Control style={{borderColor: "black"}} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="dark" type="submit">
               Zarejestruj
             </Button>
           </Form>
@@ -264,13 +264,13 @@ function Root() {
           <Form onSubmit={e => submitLogin({e: e})}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Adres email</Form.Label>
-              <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
+              <Form.Control style={{borderColor: "black"}} type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Hasło</Form.Label>
-              <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+              <Form.Control style={{borderColor: "black"}} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="dark" type="submit">
               Zaloguj
             </Button>
           </Form>

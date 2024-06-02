@@ -107,7 +107,7 @@ const Products = () => {
     }
     else{
         return (<div>
-                ddd
+                Error occured
             </div>
     )
     }
