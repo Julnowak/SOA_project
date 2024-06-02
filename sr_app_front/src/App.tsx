@@ -21,6 +21,8 @@ import Negotiations from "./admin/Negotiations";
 import History from "./admin/History";
 import Chatroom from "./admin/Chatroom";
 import CrateChatroom from "./admin/CrateChatroom";
+import BuySite from "./admin/BuySite";
+import BuyProduct from "./admin/BuyProduct";
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -206,6 +208,8 @@ function Root() {
                <Route path='/products_view/:id' element={<ProductSite/>}/>
                <Route path='/chatroom/:id' element={<Chatroom/>}/>
                <Route path='/createChatroom/:id' element={<CrateChatroom/>}/>
+               <Route path='/:id/buy' element={<BuySite/>}/>
+               <Route path='/:id/buyProduct' element={<BuyProduct/>}/>
            </Routes>
             </div>
           )}

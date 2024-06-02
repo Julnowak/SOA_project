@@ -41,8 +41,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             pass
 
         try:
-            new = text_data_json["new"]
-            print(new)
+            new = float(text_data_json["new"])
+            room = text_data_json["room"]
+            user_type = text_data_json["user_type"]
+            productId = float(text_data_json["productId"])
+            await self.set_new_price(room, new,user_type)
         except:
             pass
 
@@ -70,3 +73,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_categories_value(self, username, content, room):
         return Message.objects.create(username=username, message=content, timestamp=datetime.datetime.now(),
                                       room=Room.objects.get(id=int(room)))
+
+    @sync_to_async
+    def set_new_price(self, room_id, new_price, user_type):
+        r = Room.objects.get(id=room_id)
+        print(r.new_offer_producent)
+        if user_type == "klient":
+            r.new_offer_customer = new_price
+        elif user_type == 'producent':
+            if new_price < r.new_offer_customer:
+                r.new_offer_customer = new_price
+            r.new_offer_producent = new_price
+        r.save()
+        return r
+

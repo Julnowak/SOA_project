@@ -20,6 +20,7 @@ const Chatroom = () => {
   const [product, setProduct] = useState(0); // id
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState(0.00);
+  const [proposition, setProposition] = useState(0.00);
   const [newPrice, setNewPrice] = useState(productPrice);
   const [message, setMessage] = useState<string|null>();
   const [messages, setMessages] = useState([] as Message[]);
@@ -58,6 +59,7 @@ const Chatroom = () => {
               setProduct(ans[1].product)
               setProductName(ans[1].product_name)
               setProductPrice(ans[1].new_offer_producent)
+              setProposition(ans[1].new_offer_customer)
               setStatus(ans[1].status)
           } catch {
                   console.log('dddd')
@@ -122,10 +124,13 @@ const Chatroom = () => {
   const handlePriceChange = (event) => {
     event.preventDefault();
     if (newPrice && socket) {
+      toggleModal()
       const data = {
         new: newPrice,
         username: username,
-        room: params.id
+        room: params.id,
+        productId: product,
+        user_type: user_type
       };
         socket.send(JSON.stringify(data));
 
@@ -166,8 +171,9 @@ const Chatroom = () => {
 
         <div className="chat-container">
           <div style={{textAlign: "center", marginBottom: 20}} className="chat-header">Nr negocjacji: {params.id}</div>
-          <h3 style={{textAlign: "center"}}>Aktualnie proponowana cena: {productPrice} zł</h3>
-            <div  className="scrollable-content" id="scrollable-content" style={{border: "1px solid lightgray", overflow: 'auto', display: "flex", flexDirection: "column", height: '600px', marginBottom: 40, marginLeft: 30, marginRight: 30, marginTop: 10}}>
+          <h3 style={{textAlign: "center"}}>Aktualnie proponowana cena producenta: {productPrice} zł</h3>
+          <h6 style={{textAlign: "center"}}>Klient prosi o zmianę na: {proposition} zł</h6>
+            <div  className="scrollable-content" id="scrollable-content" style={{border: "1px solid lightgray", overflow: 'auto', display: "flex", flexDirection: "column", height: '500px', marginBottom: 40, marginLeft: 30, marginRight: 30, marginTop: 10}}>
             {messages.map((message, index) => (
                <div>
                 <div key={index} className="message" style={message.username === username? ({backgroundColor: "lightgray",border: "1px solid black", borderRadius: 10, padding: 10, marginLeft: 100, marginRight: 10, marginTop: 20, marginBottom:0}): {backgroundColor: "white", borderRadius: 10, border: "1px solid black", padding: 10, marginLeft: 10, marginRight: 100, marginTop: 20, marginBottom:0}}>
@@ -234,7 +240,7 @@ const Chatroom = () => {
                                     value={newPrice}
                                     onChange={handleChange}
                                   />
-                                  <Button style={{margin:20, marginRight: 20}}  variant="dark" type="submit">Zaakceptuj</Button>
+                                  <Button style={{margin:20, marginRight: 20}} variant="dark" type="submit">Zaakceptuj</Button>
                               </Form>
                             <Button className="close-modal" variant="red" onClick={toggleModal}>
                               ❌
@@ -255,8 +261,10 @@ const Chatroom = () => {
       ) : null}
 
       {user_type === 'klient' && status !== 'Zakończono'? (
-          <div>
-            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark">Kup</Button>
+          <div style={{display: "inline-flex"}}>
+            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark" onClick={function () {
+              navigate(`/${params.id}/buy`);
+            }}>Kup produkt</Button>
             <div>
             <Button variant="dark" onClick={toggleModal}>Zaproponuj</Button>
 
@@ -265,16 +273,18 @@ const Chatroom = () => {
                   <div onClick={toggleModal} className="overlay"></div>
 
                     <div className="modal-content" style={{backgroundColor: "white"}}>
-                      <Form>
+                      <Form onSubmit={handlePriceChange}>
                             <h2> Nowa cena</h2>
                             <Form.Control style={{marginTop:40, borderColor: "black", marginRight: 20}}
                               type="number"
                               min="0"
                               step=".01"
+                              value={newPrice}
+                              onChange={handleChange}
                             />
                             <Button style={{margin:20, marginRight: 20}}  variant="dark" type="submit">Zaakceptuj</Button>
                         </Form>
-                      <Button className="close-modal" variant="red" onClick={toggleModal}>
+                      <Button className="close-modal"  variant="red" onClick={toggleModal}>
                         ❌
                       </Button>
                     </div>
