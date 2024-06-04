@@ -83,6 +83,18 @@ class EndNegotiation(APIView):
         return Response(serializerRoom.data, status=status.HTTP_200_OK)
 
 
+class RenewNegotiation(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, room_id=None):
+        chatroom = Room.objects.get(id=room_id)
+        chatroom.status = "W toku"
+        chatroom.save()
+        serializerRoom = RoomSerializer(chatroom)
+        return Response(serializerRoom.data, status=status.HTTP_200_OK)
+
+
 def index(request):
     return render(request, "chat/index.html")
 

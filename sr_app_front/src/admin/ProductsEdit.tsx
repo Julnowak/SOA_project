@@ -62,7 +62,7 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
         <div className="center" style={{width: 300, margin: '50px auto '}}>
             <form onSubmit={submit}>
                 <div className="form-group">
-                    <label>Name</label>
+                    <label>Nazwa produktu</label>
                     <input type='text' defaultValue={name} className="form-control" name="name"
                     onChange={e => setName(e.target.value)}/>
 
@@ -72,7 +72,7 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
                     onChange={handleChange} alt={'None'}/>
 
                     <label>Price</label>
-                    <input type='number' defaultValue={price} className="form-control" name="title"
+                    <input type='number' step=".01" min="0" defaultValue={price} className="form-control" name="title"
                     onChange={e => setPrice(e.target.value)}/>
                 </div>
                 <button type='submit' className='btn btn-outline-secondary'>Save</button>
@@ -86,19 +86,19 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
             <form onSubmit={submit}>
                 <div className="form-group">
                     <label>Name</label>
-                    <input type='text' defaultValue={name} className="form-control" name="name"
+                    <input style={{borderColor: "black", margin:20}} type='text' defaultValue={name} className="form-control" name="name"
                     onChange={e => setName(e.target.value)}/>
 
                     <label>Obraz</label>
                     <img src={`http://localhost:8000${image}`} defaultValue={`http://localhost:8000${image}`} style={{height: 300}} alt={''}/>
-                    <input type='file'  className="form-control" name="title"
+                    <input style={{borderColor: "black", margin:20}} type='file'  className="form-control" name="title"
                     onChange={handleChange} alt={'None'}/>
 
                     <label>Price</label>
-                    <input type='number' defaultValue={price} className="form-control" name="title"
+                    <input style={{borderColor: "black", margin:20}} type='number' step=".01" min="0"  defaultValue={price} className="form-control" name="title"
                     onChange={e => setPrice(e.target.value)}/>
                 </div>
-                <button type='submit' className='btn btn-outline-secondary'>Save</button>
+                <button style={{textAlign: "center", margin: "auto"}} type='submit' className='btn btn-outline-secondary'>Zapisz</button>
             </form>
         </div>
     );

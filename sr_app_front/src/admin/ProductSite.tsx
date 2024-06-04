@@ -77,7 +77,7 @@ useEffect(() => {
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center"}}>
               <div style={{display: "inline-flex", margin: "auto"}}>
-                  {userType === 'klient'? <Button style={{margin: 20}} variant="dark" ><Link style={{textDecoration: "none", color: "white"}} to={`/${params.id}/buyProduct`}>Kup produkt</Link></Button>: null }
+                  {userType === 'klient'? <Button style={{margin: 20}} variant="dark" ><Link style={{textDecoration: "none", color: "white"}} to={`/${params.id}/buy/${"prod"}`}>Kup produkt</Link></Button>: null }
                   <br/>
                   {userType === 'klient'? <Button style={{margin: 20}} variant="dark" ><Link style={{textDecoration: "none", color: "white"}} to={`/createChatroom/${params.id}`}>Negocjuj</Link></Button>: null }
               </div>

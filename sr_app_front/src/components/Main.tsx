@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Product} from "../interfaces/product";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 const Main = () => {
     const [products, setProducts] = useState([] as Product[]);
@@ -23,6 +23,18 @@ const Main = () => {
             }
         )();
     }, []);
+
+        // @ts-ignore
+  const handleEvent = (event) => {
+    event.preventDefault();
+    // if (product && socket) {
+    //   const data = {
+    //     product: product,
+    //   };
+    //     socket.send(JSON.stringify(data));
+    //   setProduct(null);
+    // }
+  };
 
     const like = async (id: number) => {
         try {
@@ -48,6 +60,40 @@ const Main = () => {
               }
     }
 
+    const [socket, setSocket] = useState<WebSocket|null>(null);
+  const params = useParams();
+
+  useEffect(() => {
+  setUsername(localStorage.getItem("username"));
+
+    if (username && products) {
+      const newSocket = new WebSocket(`ws://127.0.0.1:8000/ws/sales/`);
+      // @ts-ignore
+        setSocket(newSocket);
+        newSocket.onopen = () => console.log("WebSocket connected");
+        newSocket.onclose = () => {
+          console.log("WebSocket disconnected");
+          // localStorage.removeItem("username");
+        };
+      return () => {
+        newSocket.close();
+      };
+    }
+  }, [username, products]);
+
+  useEffect(() => {
+    if (socket) {
+      // @ts-ignore
+        socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log(data)
+
+      };
+    }
+
+  }, [socket]);
+
+
 
     document.body.style.backgroundColor = "#ffffff";
     return (
@@ -64,6 +110,7 @@ const Main = () => {
                                                 <div className="col-md-4" key={p.id}>
 
                                                     <div className="card mb-4 shadow-sm">
+                                                        { !p.is_bought ?
                                                         <div className="card-body" >
                                                             <div style={{height: '70%'}}>
                                                                 <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
@@ -85,7 +132,10 @@ const Main = () => {
                                                                         <small className="text-muted">{p.price} zł</small>
                                                                     </div>
                                                                 </div>
-                                                        </div>
+
+                                                        </div>:
+                                                        <div className="card-body" >X</div>}
+
                                                     </div>
 
                                                 </div>

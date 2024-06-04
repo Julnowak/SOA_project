@@ -41,6 +41,7 @@ function Root() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errflag, setErrflag] = useState(false);
     const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
     const navigate = useNavigate()
 
@@ -106,6 +107,7 @@ function Root() {
     e.preventDefault();
     console.log(email)
       try {
+
           const response = await client.post(
           "http://127.0.0.1:8001/api/login/",
           {
@@ -113,6 +115,7 @@ function Root() {
             password: password
           })
 
+        setErrflag(false);
         const em = response.data.email;
         const name = response.data.username;
         const user_type = response.data.user_type;
@@ -133,6 +136,7 @@ function Root() {
         }
 
       } catch (error) {
+        setErrflag(true);
         console.error('Login failed:', error);// Login failed
     }
   }
@@ -208,8 +212,7 @@ function Root() {
                <Route path='/products_view/:id' element={<ProductSite/>}/>
                <Route path='/chatroom/:id' element={<Chatroom/>}/>
                <Route path='/createChatroom/:id' element={<CrateChatroom/>}/>
-               <Route path='/:id/buy' element={<BuySite/>}/>
-               <Route path='/:id/buyProduct' element={<BuyProduct/>}/>
+               <Route path='/:id/buy/:type' element={<BuySite/>}/>
            </Routes>
             </div>
           )}
@@ -274,6 +277,10 @@ function Root() {
               <Form.Label>Hasło</Form.Label>
               <Form.Control style={{borderColor: "black"}} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
             </Form.Group>
+
+            <div style={(errflag? {marginBottom: 20, display: "block"}:{marginBottom: 20, display: "none"})}>
+                <b style={{color:"red"}}>Wprowadzono błędny email lub hasło. Spróbuj ponownie.</b>
+            </div>
             <Button variant="dark" type="submit">
               Zaloguj
             </Button>

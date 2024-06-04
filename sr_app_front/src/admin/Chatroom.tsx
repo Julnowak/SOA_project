@@ -26,6 +26,7 @@ const Chatroom = () => {
   const [messages, setMessages] = useState([] as Message[]);
   const [status, setStatus] = useState('');
   const [flag, setFlag] = useState(false);
+
   const params = useParams();
   const [modal, setModal] = useState(false);
 
@@ -101,8 +102,6 @@ const Chatroom = () => {
       };
     }
 
-
-
   }, [socket]);
 
 
@@ -149,6 +148,17 @@ const Chatroom = () => {
         }
     };
 
+  const renew = async (id: string|undefined) => {
+        if (window.confirm("Czy chcesz wznowić konwersację?")){
+
+            await fetch(`http://localhost:8002/api/chatroom/${id}/renew`, {
+                method: 'POST'
+            }).then(e =>{setFlag(false);
+        });
+
+        }
+    };
+
   // @ts-ignore
   const handleChange = (e) => {
     setNewPrice(e.target.value);
@@ -171,26 +181,53 @@ const Chatroom = () => {
 
         <div className="chat-container">
           <div style={{textAlign: "center", marginBottom: 20}} className="chat-header">Nr negocjacji: {params.id}</div>
-          <h3 style={{textAlign: "center"}}>Aktualnie proponowana cena producenta: {productPrice} zł</h3>
+          <h3 style={{textAlign: "center"}}>Aktualna cena producenta: {productPrice} zł</h3>
           <h6 style={{textAlign: "center"}}>Klient prosi o zmianę na: {proposition} zł</h6>
             <div  className="scrollable-content" id="scrollable-content" style={{border: "1px solid lightgray", overflow: 'auto', display: "flex", flexDirection: "column", height: '500px', marginBottom: 40, marginLeft: 30, marginRight: 30, marginTop: 10}}>
             {messages.map((message, index) => (
                <div>
-                <div key={index} className="message" style={message.username === username? ({backgroundColor: "lightgray",border: "1px solid black", borderRadius: 10, padding: 10, marginLeft: 100, marginRight: 10, marginTop: 20, marginBottom:0}): {backgroundColor: "white", borderRadius: 10, border: "1px solid black", padding: 10, marginLeft: 10, marginRight: 100, marginTop: 20, marginBottom:0}}>
-                  <div className="message-content" style={{wordWrap: "break-word"}}>{message.message}</div>
-                </div>
-                <div style={message.username === username? ({textAlign: "right", marginLeft: 100, marginRight: 10, marginTop: 0, marginBottom:0}): { marginLeft: 10, marginRight: 100, marginTop: 0, marginBottom:0}}>
-                    {message.timestamp?.slice(0,10)}, {message.timestamp?.slice(11,16)}
-                    <div>
-                        {message.username}
-                    </div>
-                </div>
-               </div>
+  <div
+    key={index}
+    className="message-wrapper"
+    style={{ display: "flex", justifyContent: message.username === username ? "flex-end" : "flex-start", marginTop: 20, marginBottom: 0 }}
+  >
+    <div
+      className="message"
+      style={{
+        backgroundColor: message.username === username ? "lightgray" : "white",
+        border: "1px solid black",
+        borderRadius: 10,
+        padding: 10,
+        marginRight: message.username === username ? 10 : 0,
+        marginLeft: message.username === username ? 0 : 10,
+        maxWidth: "80%",
+        display: "inline-block"
+      }}
+    >
+      <div className="message-content" style={{ wordWrap: "break-word" }}>
+        {message.message}
+      </div>
+    </div>
+  </div>
+  <div
+    style={{
+      textAlign: message.username === username ? "right" : "left",
+      marginLeft: message.username === username ? "auto" : 10,
+      marginRight: message.username === username ? 10 : "auto",
+      marginTop: 0,
+      marginBottom: 0,
+      maxWidth: "80%"
+    }}
+  >
+    {message.timestamp?.slice(0, 10)}, {message.timestamp?.slice(11, 16)}
+    <div>{message.username}</div>
+  </div>
+</div>
 
             ))}
           </div>
           <div style={{margin: 30}}>
-          {status != 'Zakończono'? (
+          {status !== 'Zakończono'? (
               <Form onSubmit={handleSubmit} className="d-flex align-items-end">
 
               <Form.Control id={"inputId"} style={{borderColor: "black", marginRight: 20}}
@@ -217,7 +254,7 @@ const Chatroom = () => {
 
 
       {status === 'Zakończono'? (
-            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark">Wznów</Button>
+            <Button style={{marginLeft: 10, marginRight: 10}} variant="dark" onClick={()=> renew(params.id)}>Wznów</Button>
       ) : null}
 
       {user_type === 'producent' && status !== 'Zakończono'? (
@@ -263,7 +300,7 @@ const Chatroom = () => {
       {user_type === 'klient' && status !== 'Zakończono'? (
           <div style={{display: "inline-flex"}}>
             <Button style={{marginLeft: 10, marginRight: 10}} variant="dark" onClick={function () {
-              navigate(`/${params.id}/buy`);
+              navigate(`/${params.id}/buy/${"neg"}`);
             }}>Kup produkt</Button>
             <div>
             <Button variant="dark" onClick={toggleModal}>Zaproponuj</Button>

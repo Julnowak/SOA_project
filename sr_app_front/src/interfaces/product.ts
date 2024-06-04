@@ -5,4 +5,5 @@ export interface Product {
     price: number;
     likes: number;
     description: string;
+    is_bought: boolean;
 }

@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
@@ -15,4 +17,13 @@ class Product(models.Model):
         return self.name + "_" + str(self.id)
 
 
+class Transaction(models.Model):
+    seller = models.IntegerField()
+    buyer = models.IntegerField()
+    product = models.IntegerField()
+    chat = models.IntegerField(blank=True, null=True)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=100)
+    date = models.DateTimeField(default=datetime.datetime.now())
 
+    def __str__(self):
+        return str(self.product) + "_" + str(self.seller) + "_" + str(self.buyer)
