@@ -105,3 +105,5 @@ class HistorySite(APIView):
         prods = Product.objects.filter(userproduct__user__username=request.data['username'], is_bought=True)
         serializer = ProductSerializer(prods, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+

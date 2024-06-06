@@ -16,7 +16,7 @@ from rest_framework import status
 class ProductViewSet(viewsets.ViewSet):
 
     def list(self, request):
-        products = Product.objects.all()
+        products = Product.objects.filter(is_bought=False)
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 

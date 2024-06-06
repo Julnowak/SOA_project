@@ -64,5 +64,5 @@ class UserProduct(models.Model):
 
 
 class UserLike(models.Model):
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user_id = models.IntegerField()
+    product_id = models.IntegerField()

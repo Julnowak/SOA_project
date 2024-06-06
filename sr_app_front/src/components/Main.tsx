@@ -4,8 +4,11 @@ import {Link, useParams} from "react-router-dom";
 
 const Main = () => {
     const [products, setProducts] = useState([] as Product[]);
-    const [username, setUsername] = useState('' as string| null);
-
+    const [username, setUsername] = useState(localStorage.getItem('username'));
+    const [user_id, setUserId] = useState(localStorage.getItem('user_id'));
+    const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
+    const [socket, setSocket] = useState<WebSocket|null>(null);
+    const params = useParams();
 
     useEffect(() => {
         (
@@ -14,8 +17,6 @@ const Main = () => {
                 const response = await fetch('http://localhost:8000/api/products/');
 
                 const data = await response.json();
-                const un = localStorage.getItem('username')
-                setUsername(un);
                 setProducts(data);
                 } catch {
                   console.log('dddd')
@@ -24,50 +25,13 @@ const Main = () => {
         )();
     }, []);
 
-        // @ts-ignore
-  const handleEvent = (event) => {
-    event.preventDefault();
-    // if (product && socket) {
-    //   const data = {
-    //     product: product,
-    //   };
-    //     socket.send(JSON.stringify(data));
-    //   setProduct(null);
-    // }
-  };
 
-    const like = async (id: number) => {
-        try {
-            await fetch(`http://localhost:8000/api/products/${id}/like`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    username,
-                })
-            });
-
-            setProducts(products.map(
-                (p: Product) => {
-                    if (p.id === id) {
-                        p.likes++;
-                    }
-
-                    return p;
-                }
-            ));
-        } catch {
-                  console.log('dddd')
-              }
-    }
-
-    const [socket, setSocket] = useState<WebSocket|null>(null);
-  const params = useParams();
 
   useEffect(() => {
   setUsername(localStorage.getItem("username"));
 
-    if (username && products) {
-      const newSocket = new WebSocket(`ws://127.0.0.1:8000/ws/sales/`);
+    if (username && products.length !== 0) {
+      const newSocket = new WebSocket(`ws://127.0.0.1:8001/ws/user_socket/`);
       // @ts-ignore
         setSocket(newSocket);
         newSocket.onopen = () => console.log("WebSocket connected");
@@ -76,24 +40,37 @@ const Main = () => {
           // localStorage.removeItem("username");
         };
       return () => {
-        newSocket.close();
+          if (newSocket.readyState === 1) {
+            newSocket.close();}
       };
     }
   }, [username, products]);
 
+
   useEffect(() => {
-    if (socket) {
+    if (socket ) {
       // @ts-ignore
         socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log(data)
-
       };
     }
 
   }, [socket]);
 
 
+  // @ts-ignore
+  const handleEvent = async (id: number) =>  {
+    if (username && socket && id) {
+      const data = {
+        username: username,
+        productId: id,
+        userId: user_id
+      };
+        socket.send(JSON.stringify(data));
+      // setProduct(null);
+    }
+  };
 
     document.body.style.backgroundColor = "#ffffff";
     return (
@@ -108,9 +85,8 @@ const Main = () => {
                                         (p: Product) => {
                                             return (
                                                 <div className="col-md-4" key={p.id}>
-
                                                     <div className="card mb-4 shadow-sm">
-                                                        { !p.is_bought ?
+
                                                         <div className="card-body" >
                                                             <div style={{height: '70%'}}>
                                                                 <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
@@ -123,22 +99,32 @@ const Main = () => {
                                                             </div>
 
                                                                 <div style={{height: '30%'}}>
-                                                                    <div className="d-flex justify-content-between align-items-center">
-                                                                        <div className="btn-group">
-                                                                            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => like(p.id)}>
-                                                                                Like
-                                                                            </button>
+
+                                                                        {user_type === 'klient'?
+                                                                        <div className="d-flex justify-content-between align-items-center">
+                                                                            <div className="btn-group">
+                                                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEvent(p.id)}>
+                                                                                    Like
+                                                                                </button>
+                                                                            </div>
+                                                                            <small className="text-muted">{p.price} zł</small>
                                                                         </div>
-                                                                        <small className="text-muted">{p.price} zł</small>
-                                                                    </div>
+                                                                            :
+                                                                        <div style={{textAlign:"center"}}>
+                                                                            <small className="text-muted">{p.price} zł</small>
+                                                                        </div>
+                                                                        }
+
+
+
                                                                 </div>
 
-                                                        </div>:
-                                                        <div className="card-body" >X</div>}
+                                                        </div>
 
                                                     </div>
 
                                                 </div>
+
                                             )
                                         }
                                     )}
