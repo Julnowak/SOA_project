@@ -6,6 +6,7 @@ from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from .models import UserLike
+from .serializers import UserLikeSerializer
 
 
 class UsersConsumer(AsyncWebsocketConsumer):
@@ -52,5 +53,6 @@ class UsersConsumer(AsyncWebsocketConsumer):
 
         else:
             UserLike.objects.create(user_id=int(userId), product_id=productId)
-        likes = UserLike.objects.filter(product_id=productId).count()
-        return likes
+        likes = UserLike.objects.filter(user_id=userId)
+        ser = UserLikeSerializer(likes, many=True).data
+        return ser

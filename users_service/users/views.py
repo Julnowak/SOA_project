@@ -4,11 +4,11 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,permissions
-from users.serializers import UserSerializer, UserRegisterSerializer, UserLoginSerializer, ProductSerializer
+from users.serializers import UserSerializer, UserRegisterSerializer, UserLoginSerializer, ProductSerializer, UserLikeSerializer
 from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import login, logout
 from .producer import publish
-from .models import UserProduct, AppUser, Product
+from .models import UserProduct, AppUser, Product, UserLike
 from .vaildations import validate_email, validate_password, custom_validation
 
 
@@ -107,3 +107,36 @@ class HistorySite(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class LikeView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request):
+        conn = UserLike.objects.filter(user_id=int(request.data['user_id']))
+        all_prods = Product.objects.filter(id__in=conn.values_list('product_id'))
+
+        serializer = ProductSerializer(all_prods, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AllLikesView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request):
+        all_likes = UserLike.objects.filter(user_id=int(request.data['user_id']))
+        serializer = UserLikeSerializer(all_likes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UnlikeView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, pk=None):
+        print(pk)
+        conn = UserLike.objects.get(user_id=int(request.data['user_id']),product_id=int(pk))
+        print(conn)
+        conn.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

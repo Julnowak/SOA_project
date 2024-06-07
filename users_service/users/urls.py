@@ -8,4 +8,7 @@ urlpatterns = [
     path('user/', views.UserView.as_view(), name='user'),
     path('productuser/<int:pk>', views.UserProductSite.as_view(), name='user_product'),
     path('productuser/', views.UserAllProductSite.as_view(), name='user_products_all'),
+    path('likes/', views.LikeView.as_view(), name='like_view'),
+    path('all_likes/', views.AllLikesView.as_view(), name='all_like_view'),
+    path('unlike/<int:pk>', views.UnlikeView.as_view(), name='unlike_view'),
 ]

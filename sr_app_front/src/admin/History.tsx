@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Product} from "../interfaces/product";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const History = () => {
     const [products, setProducts] = useState([] as Product[])
     const [available, setAvailable] = useState(false)
-    const [username, setUsername] = useState(localStorage.getItem('username') as string | null)
+    const [username] = useState(localStorage.getItem('username') as string | null)
+    const [user_type] = useState(localStorage.getItem('user_type') as string | null)
 
     useEffect(
         () => {
@@ -40,7 +41,15 @@ const History = () => {
 
     return (
         <div>
-            <h1 style={{textAlign: "center", margin: 40}}>Historia sprzedaży</h1>
+            {user_type==="klient"?
+                <div>
+                    <h1 style={{textAlign: "center", margin: 40}}>Historia zakupów</h1>
+                </div>:
+                <div>
+                    <h1 style={{textAlign: "center", margin: 40}}>Historia sprzedaży</h1>
+                </div>
+            }
+
 
             <div className="table-responsive">
               <table className="table table-striped table-sm">

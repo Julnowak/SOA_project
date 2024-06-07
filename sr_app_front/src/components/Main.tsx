@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {Product} from "../interfaces/product";
-import {Link, useParams} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 const Main = () => {
     const [products, setProducts] = useState([] as Product[]);
+    const [likes, setLikes] = useState([]);
+    const [prod_ids, setProdIds] = useState([] as number[]);
     const [username, setUsername] = useState(localStorage.getItem('username'));
-    const [user_id, setUserId] = useState(localStorage.getItem('user_id'));
-    const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
+    const [user_id] = useState(localStorage.getItem('user_id'));
+    const [user_type] = useState(localStorage.getItem('user_type'));
     const [socket, setSocket] = useState<WebSocket|null>(null);
-    const params = useParams();
 
     useEffect(() => {
         (
@@ -23,7 +24,39 @@ const Main = () => {
               }
             }
         )();
-    }, []);
+        
+        if (user_id && likes.length === 0){
+            (
+            async () => {
+                try {
+                const response = await fetch('http://localhost:8001/api/all_likes/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json',},
+                    body: JSON.stringify({
+                      user_id,
+                  })
+
+                });
+
+                const data = await response.json();
+                setLikes(data);
+                // @ts-ignore
+                if (data){
+                // @ts-ignore
+                setProdIds(data.map(obj => obj.product_id));
+
+                }
+
+                } catch (e) {
+                  // @ts-ignore
+                    console.log(e)
+              }
+            }
+        )();
+        }
+        
+    // @ts-ignore
+    }, [likes.likes, prod_ids, user_id]);
 
 
 
@@ -47,16 +80,28 @@ const Main = () => {
   }, [username, products]);
 
 
-  useEffect(() => {
+  // @ts-ignore
+    useEffect(() => {
     if (socket ) {
       // @ts-ignore
         socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(data)
+        // setLikes(data);
+        console.log(data);
+
+        // @ts-ignore
+        if (data.likes){
+        // @ts-ignore
+        setProdIds(data.likes.map(obj => obj.product_id));
+        console.log(prod_ids);
+        }
+
       };
+
     }
 
-  }, [socket]);
+    // @ts-ignore
+  }, [likes.likes, prod_ids, socket]);
 
 
   // @ts-ignore
@@ -71,6 +116,10 @@ const Main = () => {
       // setProduct(null);
     }
   };
+
+    // @ts-ignore
+
+
 
     document.body.style.backgroundColor = "#ffffff";
     return (
@@ -103,9 +152,28 @@ const Main = () => {
                                                                         {user_type === 'klient'?
                                                                         <div className="d-flex justify-content-between align-items-center">
                                                                             <div className="btn-group">
-                                                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => handleEvent(p.id)}>
-                                                                                    Like
-                                                                                </button>
+                                                                                {!prod_ids.includes(p.id)?
+                                                                                    <svg style={{border: "none", cursor: "pointer"}} onClick={() => handleEvent(p.id)}
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                        width="32" height="32"
+                                                                                        color="red"
+                                                                                        fill="currentColor"
+                                                                                        className="bi bi-heart"
+                                                                                        viewBox="0 0 16 16">
+                                                                                        <path
+                                                                                            d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                                                    </svg>:
+                                                                                    <svg style={{border: "none", cursor: "pointer"}} onClick={() => handleEvent(p.id)}
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                        width="32" height="32"
+                                                                                        color="red"
+                                                                                        fill="currentColor"
+                                                                                        className="bi bi-heart-fill"
+                                                                                        viewBox="0 0 16 16">
+                                                                                        <path fill-rule="evenodd"
+                                                                                              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                                    </svg>}
+
                                                                             </div>
                                                                             <small className="text-muted">{p.price} zł</small>
                                                                         </div>

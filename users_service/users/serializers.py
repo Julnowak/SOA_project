@@ -4,7 +4,7 @@ from rest_framework import serializers
 # from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, get_user_model
 
-from users.models import Product
+from users.models import Product, UserLike
 
 UserModel = get_user_model()
 
@@ -44,4 +44,10 @@ class UserSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
+        fields = '__all__'
+
+
+class UserLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserLike
         fields = '__all__'
