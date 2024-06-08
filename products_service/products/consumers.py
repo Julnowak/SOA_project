@@ -32,8 +32,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         text_data_json = json.loads(text_data)
         print(text_data_json)
+
         product = text_data_json['product']
-        await self.change_isbought(product)
+        seller = text_data_json['seller']
+        buyer = text_data_json['buyer']
+        chat = text_data_json['chat']
+        price = text_data_json['price']
+
+        await self.change_isbought(product, seller, buyer, chat, price)
 
 
         await self.channel_layer.group_send(
@@ -52,14 +58,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"product": product}))
 
-
-
     @sync_to_async
-    def change_isbought(self, product_id):
+    def change_isbought(self, product_id, seller, buyer, chat, price):
         p = Product.objects.get(id=product_id)
         p.is_bought = not p.is_bought
         p.save()
 
+        if int(chat) == 0:
+            new_chat = None
+        else:
+            new_chat = chat
+
+        if p.is_bought:
+            Transaction.objects.create(product=int(product_id), seller=seller, buyer=buyer, chat=new_chat, price=float(price))
 
         return p.is_bought
 

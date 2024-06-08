@@ -11,4 +11,5 @@ urlpatterns = [
     path('likes/', views.LikeView.as_view(), name='like_view'),
     path('all_likes/', views.AllLikesView.as_view(), name='all_like_view'),
     path('unlike/<int:pk>', views.UnlikeView.as_view(), name='unlike_view'),
+    path('get_likes/<int:pk>', views.UnlikeView.as_view(), name='get_likes_view'),
 ]

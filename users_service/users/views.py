@@ -82,6 +82,7 @@ class UserProductSite(APIView):
         serializer = ProductSerializer(product)
         d = serializer.data
         d['username'] = user.username
+        d['user_id'] = user.user_id
         return Response(d, status=status.HTTP_200_OK)
 
 
@@ -140,3 +141,7 @@ class UnlikeView(APIView):
         conn.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def get(self, request, pk=None):
+        likes = UserLike.objects.filter(product_id=int(pk)).count()
+        return Response({"likes_num": likes}, status=status.HTTP_200_OK)

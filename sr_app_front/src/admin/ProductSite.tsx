@@ -29,12 +29,12 @@ useEffect(() => {
                 setDescription(product.description);
                 setPrice(`${product.price}`);
                 setImage(product.image);
-                // @ts-ignore
-                setLikes(product.likes);
             }
 
 
         )();
+
+
 
         (
             async () => {
@@ -47,6 +47,23 @@ useEffect(() => {
             }
 
 
+        )();
+
+        (
+            async () => {
+                try {
+                const response = await fetch(`http://localhost:8001/api/get_likes/${params.id}`, {
+                    method: 'GET',
+                    headers: {'Content-Type': 'application/json',},
+                });
+
+                const data = await response.json();
+                setLikes(data.likes_num);
+                } catch (e) {
+                  // @ts-ignore
+                    console.log(e)
+              }
+            }
         )();
     }, [params.id]);
 

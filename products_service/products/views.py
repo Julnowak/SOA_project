@@ -3,10 +3,10 @@ import random
 from django.shortcuts import render
 from rest_framework import viewsets
 
-from .models import Product
+from .models import Product, Transaction
 from .producer import publish
 
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, TransactionSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -59,3 +59,16 @@ class ProductViewSet(viewsets.ViewSet):
         d['username'] = request.data['username']
         publish('product_liked', d)
         return Response(status=status.HTTP_200_OK)
+
+
+class TransactionViewSet(viewsets.ViewSet):
+
+    def list(self, request):
+        user_type = request.data['user_type']
+        user_id = request.data['user_id']
+        if user_type == "klient":
+            transactions = Transaction.objects.filter(buyer=user_id)
+        else:
+            transactions = Transaction.objects.filter(seller=user_id)
+        serializer = TransactionSerializer(transactions, many=True)
+        return Response(serializer.data)

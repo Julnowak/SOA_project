@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Product} from "../interfaces/product";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const ClientPanel = () => {
     const [liked, setLiked] = useState([] as Product[])
@@ -75,7 +75,6 @@ const ClientPanel = () => {
                     <th style={{border: '1px solid black'}}>ID</th>
                     <th style={{border: '1px solid black'}}>Obraz</th>
                     <th style={{border: '1px solid black'}}>Nazwa</th>
-                    <th style={{border: '1px solid black'}}>Polubienia</th>
                     <th style={{border: '1px solid black'}}>Cena [zł]</th>
                     <th style={{border: '1px solid black'}}>Akcja</th>
                   </tr>
@@ -89,14 +88,14 @@ const ClientPanel = () => {
                           <td style={{border: '1px solid black'}} onClick={()=> goRouteId(p.id)}>{p.id}</td>
                           <td style={{border: '1px solid black'}} onClick={()=> goRouteId(p.id)}><img src={`http://localhost:8000${p.image}`} style={{height: 100}} alt={''}/></td>
                           <td style={{border: '1px solid black'}} onClick={()=> goRouteId(p.id)}>{p.name}</td>
-                          <td style={{border: '1px solid black'}} onClick={()=> goRouteId(p.id)}>{p.likes}</td>
                           <td style={{border: '1px solid black'}} onClick={()=> goRouteId(p.id)}>{p.price}</td>
                           <td style={{border: '1px solid black'}}>
                               <div className="btn-group mr-2">
-                                  <a href='#' className='btn btn-sm btn-outline-secondary'
+                                  <Link className='btn btn-sm btn-outline-secondary' to={`/createChatroom/${p.id}`}>Negocjuj</Link>
+                                  <button className='btn btn-sm btn-outline-secondary'
                                   onClick={() => del(p.id)}>
                                       Usuń
-                                  </a>
+                                  </button>
                               </div>
                           </td>
                         </tr>

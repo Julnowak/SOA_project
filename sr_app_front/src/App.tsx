@@ -22,7 +22,6 @@ import History from "./admin/History";
 import Chatroom from "./admin/Chatroom";
 import CrateChatroom from "./admin/CrateChatroom";
 import BuySite from "./admin/BuySite";
-import BuyProduct from "./admin/BuyProduct";
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
