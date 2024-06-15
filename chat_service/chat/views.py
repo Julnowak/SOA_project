@@ -64,6 +64,7 @@ class ChatRoomIdView(APIView):
     authentication_classes = ()
 
     def get(self, request, room_id=None):
+        print(room_id)
         chatroom = Room.objects.get(id=room_id)
         serializerRoom = RoomSerializer(chatroom)
         messages = Message.objects.filter(room=chatroom)

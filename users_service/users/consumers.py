@@ -114,12 +114,13 @@ class ProductConsumer(AsyncWebsocketConsumer):
         return product
 
     @sync_to_async
-    def edit_product(self, productId, name, price, image):
+    def edit_product(self, productId, name, price, image, description):
         print(f"dddddddddddd {productId}")
         product = Product.objects.get(productId)
         product.name = name
         product.price = price
         product.image = image
+        product.description = description
         product.save()
         print('edited')
 

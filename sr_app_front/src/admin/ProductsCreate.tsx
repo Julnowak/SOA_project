@@ -9,6 +9,7 @@ const ProductsCreate = () => {
     const [image, setImage] = useState('');
     const [redirect, setRedirect] = useState(false);
     const [imageURL, setImageURL] = useState('');
+    const [description, setDescription] = useState('');
     const [username, setUsername] = useState<string|null>(localStorage.getItem("username"));
     const [socket, setSocket] = useState<WebSocket|null>(null);
     const [product, setProduct] = useState<null|Product>()
@@ -19,6 +20,7 @@ const ProductsCreate = () => {
       const formData = new FormData();
       formData.append('image', image);
       formData.append('name', name);
+      formData.append('description', description);
       formData.append('price', price);
       // @ts-ignore
       formData.append('username', localStorage.getItem('username'));
@@ -42,6 +44,7 @@ const ProductsCreate = () => {
           likes: ans.likes,
           name: ans.name,
           price: ans.price,
+          description: description,
           call_type: "product_created"
         };
           socket.send(JSON.stringify(data));
@@ -108,7 +111,7 @@ const ProductsCreate = () => {
 
                     <label>Opis produktu</label>
                     <textarea placeholder={"Tutaj wpisz opis produktu"} className="form-control" name="title"
-                    onChange={e => setPrice(e.target.value)}/>
+                    onChange={e => setDescription(e.target.value)}/>
 
                 </div>
                 <button type='submit' className='btn btn-outline-secondary'>Save</button>

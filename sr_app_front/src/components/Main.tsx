@@ -10,7 +10,8 @@ const Main = () => {
     const [user_id] = useState(localStorage.getItem('user_id'));
     const [user_type] = useState(localStorage.getItem('user_type'));
     const [socket, setSocket] = useState<WebSocket|null>(null);
-    const [available, setAvailable] = useState(false)
+    const [available, setAvailable] = useState(false);
+    const [flag, setFlag] = useState(false)
 
     useEffect(() => {
         (
@@ -29,33 +30,30 @@ const Main = () => {
             }
         )();
         
-        if (user_id){
-            (
-            async () => {
+        if (!flag){
+            (async () => {
+            if (user_id) {
                 try {
-                const response = await fetch('http://localhost:8001/api/all_likes/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json',},
-                    body: JSON.stringify({
-                      user_id,
-                  })
+                    const response = await fetch('http://localhost:8001/api/all_likes/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ user_id }),
+                    });
+                    const data = await response.json();
+                    setLikes(data);
+                    // @ts-ignore
+                    const ids = Object.values(data).map(item => item.product_id);
+                    setProdIds(ids);
 
-                });
-
-                const data = await response.json();
-                console.log(data)
-                setLikes(data)
-
-                } catch (e) {
-                  // @ts-ignore
-                    console.log(e)
-              }
+                    setFlag(true)
+                } catch (error) {
+                    console.log('Error fetching likes:', error);
+                }
             }
-        )();
+        })()
         }
-        
     // @ts-ignore
-    }, [likes.likes, prod_ids, user_id]);
+    }, [flag, likes.likes, prod_ids, user_id]);
 
 
 
@@ -85,12 +83,13 @@ const Main = () => {
       // @ts-ignore
         socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(data)
+        // console.log(data)
         // @ts-ignore
-        if (data.likes){
+        if (data.length !== 0){
             // @ts-ignore
-            setProdIds(data.likes.map(obj => obj.product_id));
-            console.log(prod_ids);
+            // @ts-ignore
+            const ids = Object.values(data.likes).map(item => item.product_id);
+            setProdIds(ids);
         }
 
       };

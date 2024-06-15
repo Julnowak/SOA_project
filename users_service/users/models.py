@@ -53,6 +53,7 @@ class Product(models.Model):
     is_bought = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, blank=True, null=True)
+    description = models.TextField()
 
     def __str__(self):
         return self.name + "_" + str(self.id)
