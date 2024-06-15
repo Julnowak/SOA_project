@@ -5,7 +5,7 @@ import time
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
-from .models import UserLike
+from .models import UserLike, Product, UserProduct, AppUser
 from .serializers import UserLikeSerializer
 
 
@@ -56,3 +56,79 @@ class UsersConsumer(AsyncWebsocketConsumer):
         likes = UserLike.objects.filter(user_id=userId)
         ser = UserLikeSerializer(likes, many=True).data
         return ser
+
+
+class ProductConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        print('connected')
+        self.product_socket = "product_socket"
+
+        # Join room group
+        await self.channel_layer.group_add(self.product_socket, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        print('disconnected')
+        await self.channel_layer.group_discard(self.product_socket, self.channel_name)
+
+    # Receive message from WebSocket
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        print(text_data_json)
+        productId = text_data_json['productId']
+        call_type = text_data_json["call_type"]
+
+        if call_type == "product_created":
+            username = text_data_json['username']
+            is_bought = text_data_json['is_bought']
+            likes = text_data_json['likes']
+            name = text_data_json['name']
+            image = text_data_json['image']
+            price = text_data_json['price']
+            await self.create_product(productId=productId, name=name, price=price, image=image, is_bought=bool(is_bought), likes=likes, username=username)
+
+        elif call_type == "product_edited":
+            name = text_data_json['name']
+            image = text_data_json['image']
+            price = text_data_json['price']
+            await self.edit_product(productId=productId, name=name, price=price, image=image)
+
+        elif call_type == "product_deleted":
+            print('sssss')
+            username = text_data_json['username']
+            await self.delete_product(productId=productId, username=username)
+
+    @sync_to_async
+    def create_product(self, productId, name, price, image, is_bought, likes, username):
+        product = Product(id=productId, name=name, price=price,
+                          image=image, is_bought=bool(is_bought),
+                          likes=likes)
+        product.save()
+
+        if not UserProduct.objects.filter(user=AppUser.objects.get(username=username),
+                                          product=product).exists():
+            UserProduct.objects.create(user=AppUser.objects.get(username=username), product=product)
+        print('created')
+
+        return product
+
+    @sync_to_async
+    def edit_product(self, productId, name, price, image):
+        print(f"dddddddddddd {productId}")
+        product = Product.objects.get(productId)
+        product.name = name
+        product.price = price
+        product.image = image
+        product.save()
+        print('edited')
+
+        return product
+
+    @sync_to_async
+    def delete_product(self, productId, username):
+        product = Product.objects.get(id=productId)
+        product.delete()
+        print('deleted')
+        return None
+

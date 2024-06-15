@@ -50,8 +50,9 @@ class RoomView(APIView):
                                            new_offer_producent=float(product_price), product_name=product_name)
 
             serializerRoom = RoomSerializer(chatroom)
-            publish('negotiation_created', serializerRoom)
+
             print('create')
+
 
         print(chatroom)
 

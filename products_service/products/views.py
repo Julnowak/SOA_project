@@ -4,7 +4,6 @@ from django.shortcuts import render
 from rest_framework import viewsets
 
 from .models import Product, Transaction
-from .producer import publish
 
 from .serializers import ProductSerializer, TransactionSerializer
 from rest_framework.response import Response
@@ -30,7 +29,7 @@ class ProductViewSet(viewsets.ViewSet):
         newdict = {'username': request.data['username']}
         newdict.update(serializer.data)
 
-        publish('product_created', newdict)
+        # publish('product_created', newdict)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self,request,pk=None):
@@ -40,16 +39,23 @@ class ProductViewSet(viewsets.ViewSet):
 
     def update(self,request,pk=None):
         product = Product.objects.get(id=pk)
-        serializer = ProductSerializer(instance=product, data=request.data)
-        serializer.is_valid()
-        serializer.save()
-        publish('product_updated', serializer.data)
+        if '/media/' in str(request.data['image']):
+            pass
+        else:
+            product.image = str(request.data['image'])
+        product.description = request.data['description']
+        product.price = request.data['price']
+        product.name = request.data['name']
+        product.save()
+        serializer = ProductSerializer(instance=product)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def destroy(self,request,pk=None):
+        print(pk)
+        print(request.data)
         product = Product.objects.get(id=pk)
         product.delete()
-        publish('product_deleted', pk)
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def like(self, request, pk=None):
@@ -57,7 +63,6 @@ class ProductViewSet(viewsets.ViewSet):
         serializer = ProductSerializer(instance=product)
         d = serializer.data
         d['username'] = request.data['username']
-        publish('product_liked', d)
         return Response(status=status.HTTP_200_OK)
 
 

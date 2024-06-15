@@ -7,7 +7,6 @@ from rest_framework import status,permissions
 from users.serializers import UserSerializer, UserRegisterSerializer, UserLoginSerializer, ProductSerializer, UserLikeSerializer
 from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import login, logout
-from .producer import publish
 from .models import UserProduct, AppUser, Product, UserLike
 from .vaildations import validate_email, validate_password, custom_validation
 

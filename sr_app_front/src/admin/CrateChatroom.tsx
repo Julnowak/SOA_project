@@ -11,7 +11,6 @@ const CrateChatroom = () => {
       const [productId, setProductId] = useState(0); //id
       const [productPrice, setProductPrice] = useState(0.00);
       const params = useParams();
-      const [flag, setFlag] = useState(true);
 
 
       if (username && params.id){
@@ -31,7 +30,7 @@ const CrateChatroom = () => {
       }
 
 
-      if (username && seller && seller != username && params.id && productId  && flag){
+      if (username && seller && seller != username && params.id && productId){
 
         ( async () => {
               try {
@@ -59,11 +58,10 @@ const CrateChatroom = () => {
           }
 
     )();
-        console.log(room)
-      setFlag(false);}
+        console.log(room)}
 
       const navigate = useNavigate();
-      if (room && !flag){
+      if (room){
           navigate(`/chatroom/${room}`)
       }
 

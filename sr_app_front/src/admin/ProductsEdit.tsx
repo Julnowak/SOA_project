@@ -7,8 +7,11 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
     const [imageURL, setImageURL] = useState('');
+    const [description, setDescription] = useState('');
     const [flag, setFlag] = useState(false)
     const [redirect, setRedirect] = useState(false);
+    const [socket, setSocket] = useState<WebSocket|null>(null);
+    const [username] = useState<string|null>(localStorage.getItem("username"));
     const params = useParams();
 
     useEffect(() => {
@@ -21,9 +24,38 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
                 setName(product.name);
                 setPrice(`${product.price}`);
                 setImage(product.image);
+                setDescription(product.description)
             }
         )();
     }, [params.id]);
+
+    useEffect(() => {
+
+          const newSocket = new WebSocket(`ws://127.0.0.1:8001/ws/product_socket/`);
+          // @ts-ignore
+            setSocket(newSocket);
+            newSocket.onopen = () => console.log("WebSocket connected");
+            newSocket.onclose = () => {
+              console.log("WebSocket disconnected");
+            };
+          return () => {
+              if (socket?.readyState === 1) {newSocket.close();}
+          };
+
+      }, [socket?.readyState]);
+
+      useEffect(() => {
+        if (socket) {
+          // @ts-ignore
+            socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log(data)
+
+          };
+        }
+
+      }, [socket]);
+
     
     const submit = async (e: SyntheticEvent) => {
       e.preventDefault();
@@ -33,16 +65,32 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
       formData.append('name', name);
       formData.append('price', price);
       formData.append('image', image);
-      // @ts-ignore
-        for (var pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]);
-        }
-      await fetch(`http://localhost:8000/api/products/${params.id}`, {
+      formData.append('description', description);
+
+      const response = await fetch(`http://localhost:8000/api/products/${params.id}`, {
           method: 'PUT',
           body: formData,
       });
 
-      setRedirect(true);
+      const ans = await response.json();
+
+        if (ans.id && socket) {
+
+        const data = {
+          productId: ans.id,
+          username: username,
+          image: ans.image,
+          is_bought: ans.is_bought,
+          likes: ans.likes,
+          name: ans.name,
+          price: ans.price,
+          description: ans.description,
+          call_type: "product_created"
+        };
+          socket.send(JSON.stringify(data));
+          setRedirect(true);
+        }
+
     };
 
     // @ts-ignore
@@ -74,6 +122,10 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
                     <label>Price</label>
                     <input type='number' step=".01" min="0" defaultValue={price} className="form-control" name="title"
                     onChange={e => setPrice(e.target.value)}/>
+
+                    <label>Opis produktu</label>
+                    <textarea placeholder={description} className="form-control" name="title"
+                    onChange={e => setDescription(e.target.value)}/>
                 </div>
                 <button type='submit' className='btn btn-outline-secondary'>Save</button>
             </form>
@@ -97,6 +149,10 @@ const ProductsEdit = (props: PropsWithRef<any>) => {
                     <label>Price</label>
                     <input style={{borderColor: "black", margin:20}} type='number' step=".01" min="0"  defaultValue={price} className="form-control" name="title"
                     onChange={e => setPrice(e.target.value)}/>
+
+                    <label>Opis produktu</label>
+                    <textarea placeholder={description} className="form-control" name="title"
+                    onChange={e => setDescription(e.target.value)}/>
                 </div>
                 <button style={{textAlign: "center", margin: "auto"}} type='submit' className='btn btn-outline-secondary'>Zapisz</button>
             </form>
