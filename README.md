@@ -57,6 +57,7 @@ SOA_project to aplikacja webowa zbudowana w architekturze zorientowanej na usłu
     ```bash
     python run_app.py --browser chrome
 - Możesz użyć `chrome`, `firefox` lub `edge` jako argument dla używanej przeglądarki.
+- Jeżeli aplikację Docker Desktop masz zapisaną w innej lokalizacji niż domyślna dodaj ścieżkę do pliku `Docker Desktop.exe` jako argument `--docker_path`
 2. Możesz utworzyć nowe konta Użytkownika lub skorzystać z istniejących:
     - Konto Klienta:
         ```bash
