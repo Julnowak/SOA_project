@@ -61,7 +61,6 @@ const ClientPanel = () => {
 
         }, [user_id]);
 
-    console.log(liked)
     if(available){
     return (
         <div>

@@ -107,57 +107,84 @@ const ProductsEdit = () => {
 
     if (flag){
         return (
-        <div className="center" style={{width: 300, margin: '50px auto '}}>
+        <div>
+            <h1 style={{margin: 20, textAlign: "center"}}>Dodawanie produktu</h1>
+            <div className="center" style={{width: 300, margin: 50, marginLeft: "auto", marginRight: "auto"}}>
             <form onSubmit={submit}>
                 <div className="form-group">
-                    <label>Nazwa produktu</label>
-                    <input type='text' defaultValue={name} className="form-control" name="name"
-                    onChange={e => setName(e.target.value)}/>
+                    <div style={{marginTop: 10, marginBottom: 10}} >
+                        <label>Nazwa produktu</label>
+                        <input type='text' style={{border:"1px black solid"}} defaultValue={name} className="form-control" name="title"
+                               onChange={e => setName(e.target.value)}/>
+                    </div>
 
-                    <label>Obraz</label>
-                    <img src={imageURL} defaultValue={`http://localhost:8000${image}`} style={{height: 300}} alt={''}/>
-                    <input type='file'  className="form-control" name="title"
-                    onChange={handleChange} alt={'None'}/>
+                    <div style={{marginTop: 10, marginBottom: 10}}>
+                        <label>Obraz</label>
+                        <img src={imageURL} defaultValue={`http://localhost:8000${image}`} style={{height: "auto", maxWidth: 300, marginBottom: 20}} alt={''}/>
+                        <input type='file' style={{border:"1px black solid"}} className="form-control" name="title"
+                               onChange={handleChange} alt={'None'}/>
+                    </div>
 
-                    <label>Price</label>
-                    <input type='number' step=".01" min="0" defaultValue={price} className="form-control" name="title"
-                    onChange={e => setPrice(e.target.value)}/>
+                    <div style={{marginTop: 10, marginBottom: 10}}>
+                        <label>Cena</label>
+                        <input style={{border:"1px black solid"}} type='number' step=".01" min="0"  defaultValue={price} className="form-control"
+                               name="title"
+                               onChange={e => setPrice(e.target.value)}/>
+                    </div>
 
-                    <label>Opis produktu</label>
-                    <textarea placeholder={description} className="form-control" name="title"
-                    onChange={e => setDescription(e.target.value)}/>
+                    <div style={{marginTop: 10, marginBottom: 10}}>
+                        <label>Opis produktu</label>
+                        <textarea value={description} style={{border:"1px black solid"}} className="form-control" name="title"
+                                  onChange={e => setDescription(e.target.value)}/>
+                    </div>
+
                 </div>
-                <button type='submit' className='btn btn-outline-secondary'>Save</button>
+                <button style={{marginLeft: 70, marginTop: 20, width: 150}} type='submit' className='btn btn-dark'>Zapisz</button>
             </form>
+        </div>
         </div>
     );
     }
 
     return (
-        <div className="center" style={{width: 300, margin: '50px auto '}}>
+        <div>
+            <h1 style={{margin: 20, textAlign: "center"}}>Dodawanie produktu</h1>
+            <div className="center" style={{width: 300, margin: 50, marginLeft: "auto", marginRight: "auto"}}>
             <form onSubmit={submit}>
                 <div className="form-group">
-                    <label>Name</label>
-                    <input style={{borderColor: "black", margin:20}} type='text' defaultValue={name} className="form-control" name="name"
-                    onChange={e => setName(e.target.value)}/>
+                    <div style={{marginTop: 10, marginBottom: 10}} >
+                        <label>Nazwa produktu</label>
+                        <input type='text' style={{border:"1px black solid"}} defaultValue={name} className="form-control" name="title"
+                               onChange={e => setName(e.target.value)}/>
+                    </div>
 
-                    <label>Obraz</label>
-                    <img src={`http://localhost:8000${image}`} defaultValue={`http://localhost:8000${image}`} style={{height: 300}} alt={''}/>
-                    <input style={{borderColor: "black", margin:20}} type='file'  className="form-control" name="title"
-                    onChange={handleChange} alt={'None'}/>
+                    <div style={{marginTop: 10, marginBottom: 10}}>
+                        <label>Obraz</label>
+                        <img src={`http://localhost:8000${image}`} defaultValue={`http://localhost:8000${image}`} style={{height: "auto", maxWidth: 300, marginBottom: 20}} alt={''}/>
+                        <input type='file' style={{border:"1px black solid"}} className="form-control" name="title"
+                               onChange={handleChange} alt={'None'}/>
+                    </div>
 
-                    <label>Price</label>
-                    <input style={{borderColor: "black", margin:20}} type='number' step=".01" min="0"  defaultValue={price} className="form-control" name="title"
-                    onChange={e => setPrice(e.target.value)}/>
+                    <div style={{marginTop: 10, marginBottom: 10}}>
+                        <label>Cena</label>
+                        <input style={{border:"1px black solid"}} type='number' step=".01" min="0"  defaultValue={price} className="form-control"
+                               name="title"
+                               onChange={e => setPrice(e.target.value)}/>
+                    </div>
 
-                    <label>Opis produktu</label>
-                    <textarea placeholder={description} className="form-control" name="title"
-                    onChange={e => setDescription(e.target.value)}/>
+                    <div style={{marginTop: 10, marginBottom: 10}}>
+                        <label>Opis produktu</label>
+                        <textarea value={description} style={{border:"1px black solid"}} className="form-control" name="title"
+                                  onChange={e => setDescription(e.target.value)}/>
+                    </div>
+
                 </div>
-                <button style={{textAlign: "center", margin: "auto"}} type='submit' className='btn btn-outline-secondary'>Zapisz</button>
+                <button style={{marginLeft: 70, marginTop: 20, width: 150}} type='submit' className='btn btn-dark'>Zapisz</button>
             </form>
+        </div>
         </div>
     );
 };
+
 
 export default ProductsEdit;

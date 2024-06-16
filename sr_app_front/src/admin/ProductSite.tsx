@@ -89,8 +89,10 @@ const ProductSite = () => {
                         textAlign: "justify",
                         wordWrap: "break-word"
                     }}>
-                        <h3>Opis produktu</h3>
-                        {description}
+                        <h3 style={{margin: "auto", width: 300, textAlign: "center"}}>Opis produktu</h3>
+                        <p style={{marginTop:20}}>
+                            {description}
+                        </p>
                     </div>
 
 

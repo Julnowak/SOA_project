@@ -76,19 +76,21 @@ const History = () => {
                 }
 
 
-                <div className="table-responsive">
+                <div className="table-responsive" style={{textAlign: "center", margin: 40}}>
                     <table className="table table-striped table-sm">
                         <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nazwa</th>
-                            <th>Polubienia</th>
-                            <th>Cena pierwotna</th>
-                            <th>Cena sprzedaży</th>
-                            <th>Kupujący</th>
-                            <th>Negocjacja</th>
-                            <th>Czas transakcji</th>
-                            <th>Status</th>
+                            <th style={{border: '1px solid black'}}>ID</th>
+                            <th style={{border: '1px solid black'}}>Nazwa</th>
+                            <th style={{border: '1px solid black'}}>Polubienia</th>
+                            <th style={{border: '1px solid black'}}>Cena pierwotna</th>
+                            <th style={{border: '1px solid black'}}>Cena sprzedaży</th>
+                            {user_type === "klient" ?
+                                <th style={{border: '1px solid black'}}>Sprzedawca</th>:
+                                <th style={{border: '1px solid black'}}>Kupujący</th>
+                            }
+                            <th style={{border: '1px solid black'}}>Negocjacja</th>
+                            <th style={{border: '1px solid black'}}>Czas transakcji</th>
                         </tr>
                         </thead>
 
@@ -96,16 +98,17 @@ const History = () => {
                         {transactions.map((t: Transaction) => {
                             return (
 
-                                <tr key={t.id}>
-                                    <td>{t.id}</td>
-                                    <td>{t.name}</td>
-                                    <td>{t.likes}</td>
-                                    <td>{t.price}</td>
-                                    <td>{t.finalPrice}</td>
-                                    <td>{t.buyer}</td>
-                                    <td>{!t.chat ? "-------------" : t.chat}</td>
-                                    <td>{t.date.toString().slice(0, 10)}, {t.date.toString().slice(11, 16)}</td>
-                                    <td>Zakończono</td>
+                                <tr key={t.id} style={ {textAlign: "center"} }>
+                                    <td style={{border: '1px solid black'}}>{t.id}</td>
+                                    <td style={{border: '1px solid black'}}>{t.name}</td>
+                                    <td style={{border: '1px solid black'}}>{t.likes}</td>
+                                    <td style={{border: '1px solid black'}}>{t.price}</td>
+                                    <td style={{border: '1px solid black'}}>{t.finalPrice}</td>
+                                    {user_type === "klient" ?
+                                        <td style={{border: '1px solid black'}}>{t.seller}</td>:
+                                        <td style={{border: '1px solid black'}}>{t.buyer}</td>}
+                                    <td style={{border: '1px solid black'}}>{!t.chat ? "-------------" : t.chat}</td>
+                                    <td style={{border: '1px solid black'}}>{t.date.toString().slice(0, 10)}, {t.date.toString().slice(11, 16)}</td>
                                 </tr>
                             )
                         })}

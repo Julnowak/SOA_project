@@ -100,8 +100,8 @@ const Products = () => {
                 <h1 style={{margin: 20, textAlign: "center"}}>Panel producenta</h1>
                 <h2 style={{margin: 20, textAlign: "center"}}>Witaj, {localStorage.getItem('username')}!</h2>
 
-                <div style={{display: "inline-flex", margin: 20}}>
-                    <h2 style={{marginRight: 20}}>Twoje produkty</h2>
+                <div style={{display: "inline-flex", margin: 20, width: "100"}}>
+                    <h2 style={{marginRight: 20, width: "90"}}>Twoje produkty</h2>
                     <Link to={'/admin/products/create'} style={{color: "black", textDecoration: "none"}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                              className="bi bi-plus-circle" viewBox="0 0 16 16">

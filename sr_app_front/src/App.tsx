@@ -41,6 +41,7 @@ function Root() {
     const [password, setPassword] = useState('');
     const [errflag, setErrflag] = useState(false);
     const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
+    const [user_type_log, setUserTypeLog] = useState('');
     const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState(true);
@@ -104,10 +105,10 @@ function Root() {
                 localStorage.setItem('user_id', user_id);
 
                 setCurrentUser(true);
-
-                if (user_type === 'producent') {
+                console.log(user_type)
+                if (response.data.user_type === 'producent') {
                     navigate('/admin/products/')
-                } else {
+                } else if (response.data.user_type === 'klient') {
                     navigate('/admin/clientPanel/')
                 }
 
@@ -122,38 +123,31 @@ function Root() {
 
     async function submitLogin({e}: { e: any }) {
         e.preventDefault();
-        console.log(email)
-        try {
 
-            const response = await client.post(
-                "http://127.0.0.1:8001/api/login/",
-                {
-                    email: email,
-                    password: password
-                })
+        const response = await client.post(
+        "http://127.0.0.1:8001/api/login/",
+        {
+            email: email,
+            password: password
+        })
 
-            setErrflag(false);
-            const em = response.data.email;
-            const name = response.data.username;
-            const ut = response.data.user_type;
-            const user_id = response.data.id;
+        setErrflag(false);
+        const em = response.data.email;
+        const name = response.data.username;
+        const ut = response.data.user_type;
+        const user_id = response.data.id;
 
-            localStorage.setItem('email', em);
-            localStorage.setItem('username', name);
-            localStorage.setItem('user_type', ut);
-            localStorage.setItem('user_id', user_id);
+        localStorage.setItem('email', em);
+        localStorage.setItem('username', name);
+        localStorage.setItem('user_type', ut);
+        localStorage.setItem('user_id', user_id);
 
-            setCurrentUser(true);
-
-            if (user_type === 'producent') {
-                navigate('/admin/products/')
-            } else {
-                navigate('/admin/clientPanel/')
-            }
-
-        } catch (error) {
-            setErrflag(true);
-            console.error('Login failed:', error);// Login failed
+        setCurrentUser(true);
+        console.log(response.data.user_type)
+        if (response.data.user_type === 'producent') {
+            navigate('/admin/products/')
+        } else if (response.data.user_type === 'klient') {
+            navigate('/admin/clientPanel/')
         }
     }
 
@@ -166,6 +160,7 @@ function Root() {
         ).then(function () {
             setCurrentUser(false);
             localStorage.clear();
+            navigate('/admin/')
         });
     }
 
