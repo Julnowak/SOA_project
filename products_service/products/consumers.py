@@ -61,7 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def change_isbought(self, product_id, seller, buyer, chat, price, finalPrice):
         p = Product.objects.get(id=product_id)
-        p.is_bought = not p.is_bought
+        p.is_bought = True
         p.save()
 
         if int(chat) == 0:
@@ -69,10 +69,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         else:
             new_chat = chat
 
-        if p.is_bought:
-            Transaction.objects.create(product=int(product_id), seller=seller, buyer=buyer, chat=new_chat, price=float(price),
+        if new_chat is not None:
+            Transaction.objects.create(product=int(product_id), seller=seller, buyer=buyer, chat=new_chat,
+                                       price=float(p.price),
                                        name=p.name, likes=p.likes, finalPrice=float(finalPrice))
-
+        elif new_chat is None:
+            Transaction.objects.create(product=int(product_id), seller=seller, buyer=buyer, chat=new_chat,
+                                   price=float(p.price),
+                                   name=p.name, likes=p.likes, finalPrice=float(p.price))
         return p.is_bought
 
 

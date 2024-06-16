@@ -11,6 +11,7 @@ const Main = () => {
     const [user_type] = useState(localStorage.getItem('user_type'));
     const [socket, setSocket] = useState<WebSocket|null>(null);
     const [available, setAvailable] = useState(false);
+    const [numLikes, setNumLikes] = useState(0);
     const [flag, setFlag] = useState(false)
 
     useEffect(() => {
@@ -83,11 +84,8 @@ const Main = () => {
       // @ts-ignore
         socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        // console.log(data)
         // @ts-ignore
         if (data.length !== 0){
-            // @ts-ignore
-            console.log(data.likes)
             // @ts-ignore
             const ids = Object.values(data.likes).map(item => item.product_id);
             setProdIds(ids);
@@ -111,6 +109,35 @@ const Main = () => {
       };
         socket.send(JSON.stringify(data));
       // setProduct(null);
+
+        await (
+            async () => {
+                try {
+                    const response = await fetch(`http://localhost:8001/api/get_likes/${id}`, {
+                        method: 'GET',
+                        headers: {'Content-Type': 'application/json',},
+                    });
+
+                    const data = await response.json();
+
+                    setNumLikes(data.likes_num);
+                    await (async () => {
+                        // @ts-ignore
+                        const response = await fetch(`http://localhost:8000/api/update_likes/${id}`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({likes_num: data.likes_num}),
+                        });
+                        const d = await response.json();
+                        console.log(d)
+                    })()
+
+                } catch (e) {
+                    // @ts-ignore
+                    console.log(e)
+                }
+            }
+        )()
     }
   };
 

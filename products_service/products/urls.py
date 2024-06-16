@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import ProductViewSet, TransactionViewSet
+from .views import ProductViewSet, TransactionViewSet, ProductUpdateLikes
 
 urlpatterns = [
     path('products/', ProductViewSet.as_view(
@@ -41,5 +41,9 @@ urlpatterns = [
 
     path('transactions/', TransactionViewSet.as_view(
         {'post': 'list'}
-    ))
+    )),
+    path('update_likes/<int:pk>', ProductUpdateLikes.as_view(
+        {'post': 'post'}
+    )),
+
 ]

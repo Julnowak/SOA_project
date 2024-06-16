@@ -66,6 +66,17 @@ class ProductViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_200_OK)
 
 
+class ProductUpdateLikes(viewsets.ViewSet):
+
+    def post(self, request, pk=None):
+        product = Product.objects.get(id=pk)
+        print(request.data['likes_num'])
+        product.likes = request.data['likes_num']
+        product.save()
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class TransactionViewSet(viewsets.ViewSet):
 
     def list(self, request):

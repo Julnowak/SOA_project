@@ -1,12 +1,11 @@
-import json
-
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status,permissions
-from users.serializers import UserSerializer, UserRegisterSerializer, UserLoginSerializer, ProductSerializer, UserLikeSerializer
-from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import login, logout
+from rest_framework import status, permissions
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from users.serializers import UserSerializer, UserRegisterSerializer, UserLoginSerializer, ProductSerializer, \
+    UserLikeSerializer
 from .models import UserProduct, AppUser, Product, UserLike
 from .vaildations import validate_email, validate_password, custom_validation
 
@@ -90,7 +89,6 @@ class UserAllProductSite(APIView):
     authentication_classes = ()
 
     def post(self, request):
-
         prods = Product.objects.filter(userproduct__user__username=request.data['username'], is_bought=False)
         serializer = ProductSerializer(prods, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -101,7 +99,6 @@ class HistorySite(APIView):
     authentication_classes = ()
 
     def post(self, request):
-
         prods = Product.objects.filter(userproduct__user__username=request.data['username'], is_bought=True)
         serializer = ProductSerializer(prods, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -135,7 +132,7 @@ class UnlikeView(APIView):
 
     def post(self, request, pk=None):
         print(pk)
-        conn = UserLike.objects.get(user_id=int(request.data['user_id']),product_id=int(pk))
+        conn = UserLike.objects.get(user_id=int(request.data['user_id']), product_id=int(pk))
         print(conn)
         conn.delete()
 
@@ -144,3 +141,17 @@ class UnlikeView(APIView):
     def get(self, request, pk=None):
         likes = UserLike.objects.filter(product_id=int(pk)).count()
         return Response({"likes_num": likes}, status=status.HTTP_200_OK)
+
+
+class RemoveProductLikes(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, pk=None):
+        p = Product.objects.get(id=pk)
+        p.is_bought = True
+        p.save()
+        all_likes = UserLike.objects.filter(product_id=pk)
+        all_likes.delete()
+        serializer = ProductSerializer(p)
+        return Response(serializer.data, status=status.HTTP_200_OK)

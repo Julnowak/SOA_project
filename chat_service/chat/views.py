@@ -83,6 +83,19 @@ class EndNegotiation(APIView):
         return Response(serializerRoom.data, status=status.HTTP_200_OK)
 
 
+class EndAllNegotiations(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, pk=None):
+        chatrooms = Room.objects.filter(product=pk)
+        for chatroom in chatrooms:
+            chatroom.status = "Zakończono"
+            chatroom.save()
+        serializerRoom = RoomSerializer(chatrooms, many=True)
+        return Response(serializerRoom.data, status=status.HTTP_200_OK)
+
+
 class RenewNegotiation(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()

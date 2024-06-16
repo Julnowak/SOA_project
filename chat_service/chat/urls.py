@@ -25,5 +25,6 @@ urlpatterns = [
     path("allroom/", views.AllRoomView.as_view(), name="allRoomView"),
     path("chatroom/<int:room_id>/", views.ChatRoomIdView.as_view(), name="chatroomView"),
     path("chatroom/<int:room_id>/end", views.EndNegotiation.as_view(), name="endNegotiation"),
+    path("chatroom/end/<int:pk>", views.EndAllNegotiations.as_view(), name="endAllNegotiations"),
     path("chatroom/<int:room_id>/renew", views.RenewNegotiation.as_view(), name="renewNegotiation"),
 ]
