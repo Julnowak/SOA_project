@@ -50,9 +50,11 @@ class UsersConsumer(AsyncWebsocketConsumer):
     def set_like(self, productId, userId):
         if UserLike.objects.filter(user_id=int(userId), product_id=productId).exists():
             UserLike.objects.get(user_id=int(userId), product_id=productId).delete()
-
         else:
             UserLike.objects.create(user_id=int(userId), product_id=productId)
+        p = Product.objects.get(id=productId)
+        p.likes = UserLike.objects.filter(product_id=productId).count()
+        p.save()
         likes = UserLike.objects.filter(user_id=userId)
         ser = UserLikeSerializer(likes, many=True).data
         return ser

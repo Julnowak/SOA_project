@@ -44,7 +44,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             new = float(text_data_json["new"])
             room = text_data_json["room"]
             user_type = text_data_json["user_type"]
-            productId = float(text_data_json["productId"])
             await self.set_new_price(room, new,user_type)
         except:
             pass

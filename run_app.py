@@ -29,7 +29,6 @@ def main(args):
         ("cd products_service && python manage.py runserver 8000", "Run products_service on port 8000"),
         ("cd users_service && python manage.py runserver 8001", "Run users_service on port 8001"),
         ("cd chat_service && python manage.py runserver 8002", "Run chat_service on port 8002"),
-        ("cd users_service && python manage.py shell -c \"exec(open('users/consumer.py').read())\"", "Run users_service consumer.py"),
     ]
 
     # Open terminals and run commands

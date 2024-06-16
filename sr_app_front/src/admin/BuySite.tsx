@@ -4,21 +4,22 @@ import {Button} from "react-bootstrap";
 import {Product} from "../interfaces/product";
 
 const BuySite = () => {
-  const [username, setUsername] = useState<string|null>("");
+  const [username, setUsername] = useState<string|null>(localStorage.getItem("username"));
   const [seller, setSeller] = useState("");
   const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
   const [product, setProduct] = useState<number|null>(0); // id
-  const [userId, setUserId] = useState(localStorage.getItem('user_id'));
+  const [likes, setLikes] = useState<number|null>(0); // id
+  const [userId] = useState(localStorage.getItem('user_id'));
   const [productName, setProductName] = useState("");
   const [isBought, setIsBought] = useState(false);
   const [productPrice, setProductPrice] = useState(0.00);
+  const [productFinalPrice, setProductFinalPrice] = useState(0.00);
   const [image, setImage] = useState('');
   const [socket, setSocket] = useState<WebSocket|null>(null);
   const [chat, setChat] = useState<number|null>(0);
   const params = useParams();
 
   useEffect(() => {
-    setUsername(localStorage.getItem("username"));
 
     if (username && params.type && params.id ){
             ( async () => {
@@ -34,7 +35,7 @@ const BuySite = () => {
                       setSeller(ans[1].seller)
                       setProduct(ans[1].product)
                       setProductName(ans[1].product_name)
-                      setProductPrice(ans[1].new_offer_producent)
+                      setProductFinalPrice(ans[1].new_offer_producent)
                       setChat(ans[1].id)
                   }
                   else{
@@ -49,6 +50,7 @@ const BuySite = () => {
                               setProduct(params.id)
                               setProductPrice(p.price)
                               setIsBought(p.is_bought)
+                              setLikes(p.likes)
                           }
 
 
@@ -118,21 +120,19 @@ const BuySite = () => {
     if (product && socket) {
       const data = {
         product: product,
+        name: productName,
+        likes: likes,
         seller: seller,
         buyer: userId,
         chat: chat,
-        price: productPrice
-
+        price: productPrice,
+        finalPrice: productFinalPrice,
       };
         socket.send(JSON.stringify(data));
       setProduct(null);
     }
-    // navigate(`/history`);
+    navigate(`/history`);
   };
-
-
-
-
 
     useEffect(() => {
         if (product){
@@ -149,8 +149,6 @@ const BuySite = () => {
 
     }, [product]);
 
-
-
     return (
         <div>
             { params.type === "prod"?
@@ -161,9 +159,17 @@ const BuySite = () => {
                     <div style={{margin: "auto", width: 340, padding:20}}>
                         <img src={`http://localhost:8000${image}`} width={300} style={{ borderRadius: 10, marginBottom: 40}}/>
 
-                        <h3>Do zapłaty: <b>{productPrice} zł</b></h3>
+                        <h3>Do zapłaty: <b>{productFinalPrice} zł</b></h3>
                         <h4>Koszt dostawy: Bezpłatna</h4>
-                        <h4>Kupiony? {isBought?.toString()}</h4>
+                        <h4 style={{marginTop: 30}}>Dane o produkcie:</h4>
+                        <div style={{marginTop: 30}}>
+                            <p>
+                            Nazwa: {productName}
+                        </p>
+                        <p>
+                            Sprzedający: {seller}
+                        </p>
+                        </div>
 
                         <Button style={{marginTop: 20}} variant="dark" onClick={handleEvent}>Zatwierdź</Button>
                     </div>
@@ -176,9 +182,18 @@ const BuySite = () => {
                     <div style={{margin: "auto", width: 340, padding:20}}>
                         <img src={`http://localhost:8000${image}`} width={300} style={{ borderRadius: 10, marginBottom: 40}}/>
 
-                        <h3>Do zapłaty: <b>{productPrice} zł</b></h3>
-                        <h4>Koszt dostawy: Bezpłatna</h4>
-                        <h4>Kupiony? {isBought?.toString()}</h4>
+                        <h3>Do zapłaty: <b>{productFinalPrice} zł</b></h3>
+                        <h4 style={{marginTop: 30}}>Koszt dostawy: Bezpłatna</h4>
+                        <h4 style={{marginTop: 30}}>Dane o produkcie:</h4>
+                        <div style={{marginTop: 30}}>
+                            <p>
+                            Nazwa: {productName}
+                        </p>
+                        <p>
+                            Sprzedający: {seller}
+                        </p>
+                        </div>
+
 
                         <Button style={{marginTop: 20}} variant="dark" onClick={handleEvent}>Zatwierdź</Button>
                     </div>

@@ -18,11 +18,14 @@ class Product(models.Model):
 
 
 class Transaction(models.Model):
-    seller = models.IntegerField()
-    buyer = models.IntegerField()
+    seller = models.CharField(max_length=200)
+    buyer = models.CharField(max_length=200)
     product = models.IntegerField()
+    name = models.CharField(max_length=200)
     chat = models.IntegerField(blank=True, null=True)
+    likes = models.PositiveIntegerField(default=0)
     price = models.DecimalField(default=0.00, decimal_places=2, max_digits=100)
+    finalPrice = models.DecimalField(default=0.00, decimal_places=2, max_digits=100)
     date = models.DateTimeField(default=datetime.datetime.now())
 
     def __str__(self):

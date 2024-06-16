@@ -1,8 +1,8 @@
-import React, {PropsWithRef, SyntheticEvent, useEffect, useState} from 'react';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
 import {Navigate, useParams} from "react-router-dom";
 import {Product} from "../interfaces/product";
 
-const ProductsEdit = (props: PropsWithRef<any>) => {
+const ProductsEdit = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');

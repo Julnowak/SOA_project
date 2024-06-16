@@ -36,11 +36,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         product = text_data_json['product']
         seller = text_data_json['seller']
         buyer = text_data_json['buyer']
-        chat = text_data_json['chat']
         price = text_data_json['price']
+        chat = text_data_json['chat']
+        finalPrice = text_data_json['finalPrice']
 
-        await self.change_isbought(product, seller, buyer, chat, price)
-
+        await self.change_isbought(product, seller, buyer, chat, price, finalPrice)
 
         await self.channel_layer.group_send(
             self.product_sales, {'type': 'sales.message', "product": product}
@@ -59,7 +59,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"product": product}))
 
     @sync_to_async
-    def change_isbought(self, product_id, seller, buyer, chat, price):
+    def change_isbought(self, product_id, seller, buyer, chat, price, finalPrice):
         p = Product.objects.get(id=product_id)
         p.is_bought = not p.is_bought
         p.save()
@@ -70,7 +70,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             new_chat = chat
 
         if p.is_bought:
-            Transaction.objects.create(product=int(product_id), seller=seller, buyer=buyer, chat=new_chat, price=float(price))
+            Transaction.objects.create(product=int(product_id), seller=seller, buyer=buyer, chat=new_chat, price=float(price),
+                                       name=p.name, likes=p.likes, finalPrice=float(finalPrice))
 
         return p.is_bought
 
@@ -112,5 +113,4 @@ class SalesConsumer(AsyncWebsocketConsumer):
     async def sales_update(self, event):
         product = event["product"]
         await self.send(text_data=json.dumps({"product": product}))
-
 

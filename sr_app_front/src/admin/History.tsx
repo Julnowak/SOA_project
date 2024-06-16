@@ -7,8 +7,11 @@ interface Transaction {
     seller: number,
     buyer: number,
     product : string,
+    name: string,
+    likes: number,
     chat : number,
     price : number,
+    finalPrice : number,
     date : string
 }
 
@@ -93,27 +96,29 @@ const History = () => {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Obraz</th>
                     <th>Nazwa</th>
                     <th>Polubienia</th>
                     <th>Cena pierwotna</th>
                     <th>Cena sprzedaży</th>
                     <th>Kupujący</th>
-                    <th>Status</th>
                     <th>Negocjacja</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                {transactions.map((p:Transaction) => {
+                {transactions.map((t:Transaction) => {
                     return (
 
-                        <tr key={p.id} >
-                          <td onClick={()=> goRouteId(p.id)}>{p.id}</td>
-                          {/*<td onClick={()=> goRouteId(p.id)}><img src={`http://localhost:8000${p.image}`} style={{height: 100}} alt={''}/></td>*/}
-                          {/*<td onClick={()=> goRouteId(p.id)}>{p.name}</td>*/}
-                          {/*<td onClick={()=> goRouteId(p.id)}>{p.likes}</td>*/}
-                          <td onClick={()=> goRouteId(p.id)}>{p.price}</td>
+                        <tr key={t.id} >
+                          <td >{t.id}</td>
+                          <td >{t.name}</td>
+                          <td >{t.likes}</td>
+                          <td >{t.price}</td>
+                          <td >{t.finalPrice}</td>
+                          <td >{t.buyer}</td>
+                          <td >{!t.chat? "-------------": t.chat}</td>
+                          <td >Zakończono</td>
                         </tr>
 
                     )

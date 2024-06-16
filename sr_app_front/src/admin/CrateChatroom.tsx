@@ -3,9 +3,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import {Product} from "../interfaces/product";
 
 const CrateChatroom = () => {
-      const [username, setUsername] = useState<string|null>(localStorage.getItem('username'));
+      const [username] = useState<string|null>(localStorage.getItem('username'));
       const [seller, setSeller] = useState("");
-      const [user_type, setUserType] = useState(localStorage.getItem('user_type'));
       const [productName, setProductName] = useState("");
       const [room, setRoom] = useState(0); // id
       const [productId, setProductId] = useState(0); //id
@@ -56,11 +55,11 @@ const CrateChatroom = () => {
         };
 
         if (username && seller && seller !== username && params.id && productId && !flag) {
-            createChatroom();
+            createChatroom().then(() => null);
         }
 
         console.log(room);
-    }, [username, seller, params.id, productId, flag]);
+    }, [username, seller, params.id, productId, flag, room, productName, productPrice]);
 
       const navigate = useNavigate();
       if (room && flag){
