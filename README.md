@@ -9,7 +9,6 @@ SOA_project to aplikacja webowa zbudowana w architekturze zorientowanej na usłu
 - **Backend**:
   - Django
   - Django REST Framework
-  - RabbitMQ
   - Redis
   - SQLite
 
