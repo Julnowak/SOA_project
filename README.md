@@ -60,9 +60,9 @@ SOA_project to aplikacja webowa zbudowana w architekturze zorientowanej na usłu
 2. Możesz utworzyć nowe konta Użytkownika lub skorzystać z istniejących:
     - Konto Klienta:
         ```bash
-        Adres email: ccc@gmail.com
+        Adres email: klient_test@gmail.com
         Hasło: kotletkotlet
     - Konto Producenta:
         ```bash
-        Adres email: fff@gmail.com
+        Adres email: producent_test@gmail.com
         Hasło: kotletkotlet
