@@ -32,6 +32,7 @@ const BuySite = () => {
                             setSeller(ans[1].seller)
                             setProduct(ans[1].product)
                             setProductName(ans[1].product_name)
+
                             setProductFinalPrice(ans[1].new_offer_producent)
                             setChat(ans[1].id)
                         } else {

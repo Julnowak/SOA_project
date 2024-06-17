@@ -12,6 +12,7 @@ const ProductSite = () => {
     const [image, setImage] = useState('');
     const [likes, setLikes] = useState('');
     const [seller, setSeller] = useState('');
+    const [isBought, setIsBought] = useState<boolean|null>(null);
     const [description, setDescription] = useState('');
     const [userType] = useState(localStorage.getItem('user_type') as string | null)
     const params = useParams();
@@ -28,9 +29,8 @@ const ProductSite = () => {
                 setDescription(product.description);
                 setPrice(`${product.price}`);
                 setImage(product.image);
+                setIsBought(product.is_bought)
             }
-
-
         )();
 
 
@@ -65,8 +65,46 @@ const ProductSite = () => {
         )();
     }, [params.id]);
 
+    if (isBought){
+        return (
+        <div>
+            <h1 style={{ textAlign: "center", backgroundColor: "lightgray", padding: 20}}>Produkt nie jest już na sprzedaż</h1>
+            <div style={{alignItems: 'center', justifyContent: 'center', display: 'flex'}}>
+                <img style={{margin: 30, borderRadius: 20, filter: 'grayscale(1)'}} src={`http://localhost:8000${image}`} alt={"Obraz"} height={'400'}/>
+            </div>
+            <div style={{ marginBottom: 20}}>
 
-    return (
+                <div style={{backgroundColor: "lightgray", padding: 20, width:500, margin: "auto",
+                            borderRadius: 20}}>
+                    <h1 style={{textAlign: "center"}}>{name}{" "}</h1>
+                    <div style={{margin: "auto", width: 300, textAlign: "center"}}>
+                        <h3>Cena: {price}{" "} zł</h3>
+                        <h4>Sprzedawca: {seller}{" "}</h4>
+                        <h5>Polubienia: {likes}{" "}</h5>
+                    </div>
+                    <div style={{
+                        margin: "auto",
+                        marginTop: 30,
+                        marginBottom: 30,
+                        width: 400,
+                        textAlign: "justify",
+                        wordWrap: "break-word"
+                    }}>
+                        <h3 style={{margin: "auto", width: 300, textAlign: "center"}}>Opis produktu</h3>
+                        <p style={{marginTop:20}}>
+                            {description}
+                        </p>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    );
+    }else{
+        return (
         <div>
 
             <div style={{alignItems: 'center', justifyContent: 'center', display: 'flex'}}>
@@ -115,6 +153,8 @@ const ProductSite = () => {
         </div>
 
     );
+    }
+
 };
 
 export default ProductSite;

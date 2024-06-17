@@ -160,17 +160,17 @@ const Main = () => {
                                                 <div className="col-md-4" key={p.id} >
                                                     <div className="card mb-4 shadow-sm">
 
-                                                        <div className="card-body">
-                                                            <div style={{height: '70%'}}>
+                                                        <div className="card-body" style={{maxHeight: 400, minHeight: 400}}>
+                                                            <div>
                                                                 <Link style={{textDecoration:'none'}} to={`/products_view/${p.id}`}
                                                                 state = {{ products: p }}>
-                                                                    <div style={{ height: '100%', width: '100%', margin: "auto"}}>
+                                                                    <div style={{ height: 300, width: '100%', margin: "auto"}}>
                                                                         <img style={{objectFit: 'contain', borderRadius: 10, height: '100%', width: '100%'}} src={`http://localhost:8000${p.image}`} alt={p.image}/>
                                                                     </div>
                                                                     <p style={{ margin: 10,textAlign: "center", color: "black", textDecoration: "none"}} className="card-text">{p.name}</p>
                                                                 </Link>
                                                             </div>
-                                                                <div style={{height: '30%'}}>
+                                                                <div style={{height: 100}}>
                                                                         {user_type === 'klient'?
                                                                         <div className="d-flex justify-content-between align-items-center">
                                                                             {!prod_ids.includes(p.id)?

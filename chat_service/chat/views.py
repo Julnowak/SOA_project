@@ -47,7 +47,7 @@ class RoomView(APIView):
             print('get')
         elif user != seller and not Room.objects.filter(buyer=user, seller=seller, product=id).exists():
             chatroom = Room.objects.create(buyer=user, seller=seller, product=id, new_offer_customer=float(product_price),
-                                           new_offer_producent=float(product_price), product_name=product_name)
+                                           base_offer=float(product_price), new_offer_producent=float(product_price), product_name=product_name)
 
             serializerRoom = RoomSerializer(chatroom)
 
