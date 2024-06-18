@@ -39,16 +39,16 @@ SOA_project to aplikacja webowa zbudowana w architekturze zorientowanej na usłu
    >>> cd SOA_project
 2. **Tworzenie środowiska wirtualnego**
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # Na Windows: venv\Scripts\activate
+    >>> python -m venv venv
+    >>> source venv/bin/activate  # Na Windows: venv\Scripts\activate
 3. **Instalacja zależności backendowych**
     ```bash
-    pip install -r requirements.txt
+    >>> pip install -r requirements.txt
 4. **Instalacja zależności frontendowych**
     ```bash
-    cd sr_app_front
-    npm install
-    cd ..
+    >>> cd sr_app_front
+    >>> npm install
+    >>> cd ..
 ### Uruchamianie aplikacji
 
 1. W terminalu uruchom poniższy skrypt, który otworzy nowe terminale i uruchomi serwisy backendowe, Docker Desktop, Redis oraz dwa okna w przeglądarce:
