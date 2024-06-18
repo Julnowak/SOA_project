@@ -35,8 +35,8 @@ SOA_project to aplikacja webowa zbudowana w architekturze zorientowanej na usłu
 
 1. **Klonowanie repozytorium**
    ```bash
-   git clone https://github.com/your-repo/SOA_project.git
-   cd SOA_project
+   >>> git clone https://github.com/your-repo/SOA_project.git
+   >>> cd SOA_project
 2. **Tworzenie środowiska wirtualnego**
     ```bash
     python -m venv venv
